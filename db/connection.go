@@ -4,42 +4,10 @@ import (
 	"fmt"
 	"github.com/cenkalti/backoff/v4"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/pkg/errors"
 	"strconv"
 	"time"
 )
-
-type DatabaseType string
-
-const (
-	// MySQL ...
-	MySQL DatabaseType = "mysql"
-	// Postgres ...
-	Postgres DatabaseType = "postgres"
-)
-
-type Config struct {
-	Read    Database
-	Write   Database
-	Secrets string
-}
-
-type Database struct {
-	Debug          bool
-	Host           string
-	User           string
-	Port           int
-	Password       string
-	Name           string
-	Type           DatabaseType
-	MaxIdleConns   int
-	MaxOpenConns   int
-	MaxLifetimeSec int
-	ReadTimeout    string
-	WriteTimeout   string
-}
 
 type Connection struct {
 	ReadDB  *gorm.DB
