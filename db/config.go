@@ -17,8 +17,7 @@ const (
 type Config struct {
 	Read    Database `mapstructure:"read"`
 	Write   Database `mapstructure:"write"`
-	Secrets string
-	T       int
+	Secrets string   `mapstructure:"secrets"`
 }
 
 type Database struct {
