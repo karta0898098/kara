@@ -21,18 +21,18 @@ type Config struct {
 }
 
 type Database struct {
-	Debug          bool
-	Host           string
-	User           string
-	Port           int
-	Password       string
-	Name           string
-	Type           DatabaseType
-	MaxIdleConns   int
-	MaxOpenConns   int
-	MaxLifetimeSec int
-	ReadTimeout    string
-	WriteTimeout   string
+	Debug          bool         `mapstructure:"debug"`
+	Host           string       `mapstructure:"host"`
+	User           string       `mapstructure:"user"`
+	Port           int          `mapstructure:"port"`
+	Password       string       `mapstructure:"password"`
+	Name           string       `mapstructure:"name"`
+	Type           DatabaseType `mapstructure:"type"`
+	MaxIdleConns   int          `mapstructure:"max_idle_conns"`
+	MaxOpenConns   int          `mapstructure:"max_open_conns"`
+	MaxLifetimeSec int          `mapstructure:"max_lifetime"`
+	ReadTimeout    string       `mapstructure:"read_timeout"`
+	WriteTimeout   string       `mapstructure:"write_timeout"`
 }
 
 func (c *Config) New() Config {

@@ -1,10 +1,10 @@
 package zlog
 
 type Config struct {
-	Env   string
-	AppID string
-	Debug bool
-	Local bool
+	Env   string `mapstructure:"env"`
+	AppID string `mapstructure:"app_id"`
+	Debug bool   `mapstructure:"debug"`
+	Local bool   `mapstructure:"local"`
 }
 
 func (c *Config) New() Config {

@@ -1,7 +1,9 @@
 <component name="ProjectDictionaryState">
   <dictionary name="zhangyirui">
     <words>
+      <w>conns</w>
       <w>grpc</w>
+      <w>mapstructure</w>
     </words>
   </dictionary>
 </component>
