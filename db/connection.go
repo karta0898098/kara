@@ -14,7 +14,7 @@ type Connection struct {
 	WriteDB *gorm.DB
 }
 
-func NewConnection(cfg Config) (*Connection, error) {
+func NewConnection(cfg *Config) (*Connection, error) {
 
 	readDB, err := setupDatabase(&cfg.Read)
 	if err != nil {

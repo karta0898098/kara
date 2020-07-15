@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func NewGin(cfg Config) *gin.Engine {
+func NewGin(cfg *Config) *gin.Engine {
 
 	gin.SetMode(cfg.Mode)
 
@@ -20,7 +20,7 @@ func NewGin(cfg Config) *gin.Engine {
 	return engine
 }
 
-func RunGin(cfg Config, lifecycle fx.Lifecycle) *gin.Engine {
+func RunGin(cfg *Config, lifecycle fx.Lifecycle) *gin.Engine {
 
 	engine := NewGin(cfg)
 	srv := &http.Server{
