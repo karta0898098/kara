@@ -16,6 +16,7 @@ require (
 	github.com/rs/zerolog v1.19.0
 	go.uber.org/fx v1.13.0
 	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
+	google.golang.org/grpc v1.30.0 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
