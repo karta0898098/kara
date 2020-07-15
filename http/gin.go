@@ -9,6 +9,10 @@ import (
 	"net/http"
 )
 
+var Module = fx.Provide(
+	NewGin,
+)
+
 func NewGin(cfg *Config) *gin.Engine {
 
 	gin.SetMode(cfg.Mode)
@@ -20,11 +24,11 @@ func NewGin(cfg *Config) *gin.Engine {
 	return engine
 }
 
-func RunGin(cfg *Config, lifecycle fx.Lifecycle) *gin.Engine {
+func RunGin(engine *gin.Engine, config *Config, lifecycle fx.Lifecycle) *gin.Engine {
 
-	engine := NewGin(cfg)
+	//engine := NewGin(config)
 	srv := &http.Server{
-		Addr:    cfg.Port,
+		Addr:    config.Port,
 		Handler: engine,
 	}
 
@@ -34,7 +38,7 @@ func RunGin(cfg *Config, lifecycle fx.Lifecycle) *gin.Engine {
 			go func() {
 				err = srv.ListenAndServe()
 				if err != nil && err != http.ErrServerClosed {
-					log.Info().Msgf("shutting down server %v",err)
+					log.Info().Msgf("shutting down server %v", err)
 				}
 			}()
 			return err

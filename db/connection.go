@@ -14,18 +14,18 @@ type Connection struct {
 	WriteDB *gorm.DB
 }
 
-func NewConnection(cfg *Config) (*Connection, error) {
+func NewConnection(config *Config) (*Connection, error) {
 
-	readDB, err := setupDatabase(&cfg.Read)
+	readDB, err := setupDatabase(&config.Read)
 	if err != nil {
 		return nil, err
 	}
-	writeDB, err := setupDatabase(&cfg.Write)
+	writeDB, err := setupDatabase(&config.Write)
 	if err != nil {
 		return nil, err
 	}
-	readDB.LogMode(cfg.Read.Debug)
-	writeDB.LogMode(cfg.Write.Debug)
+	readDB.LogMode(config.Read.Debug)
+	writeDB.LogMode(config.Write.Debug)
 
 	return &Connection{
 		ReadDB:  readDB,

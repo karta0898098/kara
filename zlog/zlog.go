@@ -66,19 +66,19 @@ func (h severityHook) Run(e *zerolog.Event, level zerolog.Level, msg string) {
 	}
 }
 
-func Setup(cfg *Config) {
+func Setup(config *Config) {
 	zerolog.DisableSampling(true)
 	zerolog.TimestampFieldName = "local_timestamp"
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
 	level := zerolog.InfoLevel
-	if cfg.Debug {
+	if config.Debug {
 		level = zerolog.DebugLevel
 	}
 
 
-	if cfg.Local {
+	if config.Local {
 		output := zerolog.ConsoleWriter{
 			Out: os.Stdout,
 		}
@@ -107,8 +107,8 @@ func Setup(cfg *Config) {
 	log.Logger = Logger.Hook(severityHook{}).
 		With().
 		Fields(map[string]interface{}{
-			"app_id": cfg.AppID,
-			"env":    cfg.Env,
+			"app_id": config.AppID,
+			"env":    config.Env,
 		}).
 		Timestamp().
 		Logger().
