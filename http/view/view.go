@@ -2,7 +2,7 @@ package view
 
 import (
 	"github.com/gin-gonic/gin"
-	appError "github.com/karta0898098/kara/errors"
+	"github.com/karta0898098/kara/exception"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/http"
@@ -10,7 +10,7 @@ import (
 
 func Error(c *gin.Context, err error) {
 	if err != nil {
-		errorOfApp, ok := errors.Cause(err).(*appError.AppError)
+		errorOfApp, ok := errors.Cause(err).(*exception.AppError)
 		if ok {
 			if errorOfApp.Status >= http.StatusInternalServerError {
 				log.Error().Msgf("%+v", err)

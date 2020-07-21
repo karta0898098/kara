@@ -1,4 +1,4 @@
-package errors
+package exception
 
 import (
 	"github.com/pkg/errors"
@@ -11,6 +11,7 @@ var (
 	ErrInvalidInput     = &AppError{Code: 400001, Message: "One of the request inputs is not valid.", Status: http.StatusBadRequest}
 	ErrUnauthorized     = &AppError{Code: 401001, Message: http.StatusText(http.StatusUnauthorized), Status: http.StatusUnauthorized}
 	ErrResourceNotFound = &AppError{Code: 404001, Message: "The specified resource does not exist.", Status: http.StatusNotFound}
+	ErrServerInternal   = &AppError{Code: 500001, Message: http.StatusText(http.StatusInternalServerError), Status: http.StatusInternalServerError}
 )
 
 type AppError struct {

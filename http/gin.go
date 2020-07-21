@@ -9,13 +9,11 @@ import (
 	"net/http"
 )
 
-var Module = fx.Provide(
-	NewGin,
-)
 
-func NewGin(cfg *Config) *gin.Engine {
 
-	gin.SetMode(cfg.Mode)
+func NewGin(config *Config) *gin.Engine {
+
+	gin.SetMode(config.Mode)
 
 	engine := gin.New()
 	engine.Use(gin.Recovery())
