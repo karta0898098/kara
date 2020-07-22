@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 	"github.com/karta0898098/kara/http/echo/middleware"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
 )
