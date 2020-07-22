@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"github.com/karta0898098/kara/http/echo/middleware"
 	"github.com/labstack/echo"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
@@ -21,6 +22,11 @@ func NewEcho(config *Config) *echo.Echo {
 		e.HideBanner = true
 		e.HidePort = true
 	}
+
+	e.Pre(middleware.NewRequestIDMiddleware())
+	e.Use(middleware.NewErrorHandlingMiddleware())
+	e.Use(middleware.NewCORS())
+	e.Use(middleware.RecordErrorMiddleware)
 
 	return e
 }

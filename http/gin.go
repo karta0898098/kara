@@ -4,12 +4,11 @@ import (
 	"context"
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
+	"github.com/karta0898098/kara/http/gin/middleware"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
 	"net/http"
 )
-
-
 
 func NewGin(config *Config) *gin.Engine {
 
@@ -18,6 +17,8 @@ func NewGin(config *Config) *gin.Engine {
 	engine := gin.New()
 	engine.Use(gin.Recovery())
 	engine.Use(logger.SetLogger())
+	engine.Use(middleware.NewRequestIDMiddleware())
+	engine.Use(middleware.RecordErrorMiddleware())
 
 	return engine
 }
@@ -25,6 +26,8 @@ func NewGin(config *Config) *gin.Engine {
 func RunGin(engine *gin.Engine, config *Config, lifecycle fx.Lifecycle) *gin.Engine {
 
 	//engine := NewGin(config)
+
+
 	srv := &http.Server{
 		Addr:    config.Port,
 		Handler: engine,
@@ -47,5 +50,3 @@ func RunGin(engine *gin.Engine, config *Config, lifecycle fx.Lifecycle) *gin.Eng
 	})
 	return engine
 }
-
-
