@@ -15,9 +15,10 @@ var (
 )
 
 type AppError struct {
-	Code    int    `json:"code"`
-	Status  int    `json:"status"`
-	Message string `json:"message"`
+	Code    int                    `json:"code"`
+	Status  int                    `json:"status"`
+	Message string                 `json:"message"`
+	Details map[string]interface{} `json:"details"`
 }
 
 func (e *AppError) Error() string {

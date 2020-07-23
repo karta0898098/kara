@@ -2,10 +2,13 @@ package http
 
 import (
 	"context"
+	"github.com/karta0898098/kara/exception"
 	"github.com/karta0898098/kara/http/echo/middleware"
 	"github.com/labstack/echo/v4"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"go.uber.org/fx"
+	"net/http"
 )
 
 func NewEcho(config *Config) *echo.Echo {
@@ -23,6 +26,7 @@ func NewEcho(config *Config) *echo.Echo {
 		e.HidePort = true
 	}
 
+	e.HTTPErrorHandler = EchoErrorHandler
 	e.Pre(middleware.NewRequestIDMiddleware())
 	e.Use(middleware.NewErrorHandlingMiddleware())
 	e.Use(middleware.NewCORS())
@@ -31,7 +35,7 @@ func NewEcho(config *Config) *echo.Echo {
 	return e
 }
 
-func RunEcho(engine *echo.Echo, config *Config,lifecycle fx.Lifecycle) *echo.Echo  {
+func RunEcho(engine *echo.Echo, config *Config, lifecycle fx.Lifecycle) *echo.Echo {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			var err error
@@ -48,4 +52,29 @@ func RunEcho(engine *echo.Echo, config *Config,lifecycle fx.Lifecycle) *echo.Ech
 		},
 	})
 	return engine
+}
+
+func EchoErrorHandler(err error, c echo.Context) {
+	if err == nil {
+		return
+	}
+
+	echoError, ok := err.(*echo.HTTPError)
+	if ok {
+		_ = c.JSON(echoError.Code, echoError)
+		return
+	}
+
+	causeError := errors.Cause(err)
+	appError, ok := causeError.(*exception.AppError)
+	if !ok || appError == nil {
+		_ = c.JSON(http.StatusInternalServerError, exception.ErrServerInternal)
+		return
+	}
+
+	_ = c.JSON(appError.Status, map[string]interface{}{
+		"code":    appError.Code,
+		"message": appError.Message,
+		"details": appError.Details,
+	})
 }
