@@ -63,7 +63,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="MTConfigurable" />
   </component>
@@ -76,20 +76,15 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="go build github.com/karta0898098/kara" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build github.com/karta0898098/kara" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="kara" />
       <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
+      <kind value="DIRECTORY" />
       <filePath value="$PROJECT_DIR$/main.go" />
       <package value="github.com/karta0898098/kara" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Go Build.go build github.com/karta0898098/kara" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="2" />
@@ -114,40 +109,44 @@
       <screen x="0" y="23" width="1680" height="942" />
     </state>
     <state x="1060" y="334" key="#Go_Modules/0.23.1680.942@0.23.1680.942" timestamp="1594298912325" />
-    <state x="609" y="157" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594303941930">
+    <state x="343" y="156" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595830454885">
       <screen x="0" y="23" width="1680" height="945" />
     </state>
-    <state x="609" y="157" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.945@0.23.1680.945" timestamp="1594303941930" />
-    <state x="607" y="204" key="#com.intellij.ide.util.MemberChooser" timestamp="1594302446231">
+    <state x="343" y="156" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.945@0.23.1680.945" timestamp="1595830454885" />
+    <state x="607" y="204" key="#com.intellij.ide.util.MemberChooser" timestamp="1595855579591">
       <screen x="0" y="23" width="1680" height="945" />
     </state>
-    <state x="607" y="204" key="#com.intellij.ide.util.MemberChooser/0.23.1680.945@0.23.1680.945" timestamp="1594302446231" />
-    <state width="798" height="359" key="GridCell.Tab.0.bottom" timestamp="1594972084974">
-      <screen x="0" y="23" width="1680" height="951" />
+    <state x="607" y="204" key="#com.intellij.ide.util.MemberChooser/0.23.1680.945@0.23.1680.945" timestamp="1595855579591" />
+    <state x="521" y="136" key="#go_build_github.com/karta0898098/kara" timestamp="1595830418491">
+      <screen x="0" y="23" width="1680" height="945" />
+    </state>
+    <state x="521" y="136" key="#go_build_github.com/karta0898098/kara/0.23.1680.945@0.23.1680.945" timestamp="1595830418491" />
+    <state width="1638" height="302" key="GridCell.Tab.0.bottom" timestamp="1595830461421">
+      <screen x="0" y="23" width="1680" height="945" />
     </state>
     <state width="1638" height="357" key="GridCell.Tab.0.bottom/0.23.1680.942@0.23.1680.942" timestamp="1594398420924" />
-    <state width="1638" height="357" key="GridCell.Tab.0.bottom/0.23.1680.945@0.23.1680.945" timestamp="1594383962234" />
+    <state width="1638" height="302" key="GridCell.Tab.0.bottom/0.23.1680.945@0.23.1680.945" timestamp="1595830461421" />
     <state width="798" height="359" key="GridCell.Tab.0.bottom/0.23.1680.948@0.23.1680.948" timestamp="1594872547896" />
     <state width="798" height="359" key="GridCell.Tab.0.bottom/0.23.1680.951@0.23.1680.951" timestamp="1594972084974" />
-    <state width="798" height="359" key="GridCell.Tab.0.center" timestamp="1594972084973">
-      <screen x="0" y="23" width="1680" height="951" />
+    <state width="1638" height="302" key="GridCell.Tab.0.center" timestamp="1595830461420">
+      <screen x="0" y="23" width="1680" height="945" />
     </state>
     <state width="1638" height="357" key="GridCell.Tab.0.center/0.23.1680.942@0.23.1680.942" timestamp="1594398420923" />
-    <state width="1638" height="357" key="GridCell.Tab.0.center/0.23.1680.945@0.23.1680.945" timestamp="1594383962234" />
+    <state width="1638" height="302" key="GridCell.Tab.0.center/0.23.1680.945@0.23.1680.945" timestamp="1595830461420" />
     <state width="798" height="359" key="GridCell.Tab.0.center/0.23.1680.948@0.23.1680.948" timestamp="1594872547896" />
     <state width="798" height="359" key="GridCell.Tab.0.center/0.23.1680.951@0.23.1680.951" timestamp="1594972084973" />
-    <state width="798" height="359" key="GridCell.Tab.0.left" timestamp="1594972084973">
-      <screen x="0" y="23" width="1680" height="951" />
+    <state width="1638" height="302" key="GridCell.Tab.0.left" timestamp="1595830461420">
+      <screen x="0" y="23" width="1680" height="945" />
     </state>
     <state width="1638" height="357" key="GridCell.Tab.0.left/0.23.1680.942@0.23.1680.942" timestamp="1594398420922" />
-    <state width="1638" height="357" key="GridCell.Tab.0.left/0.23.1680.945@0.23.1680.945" timestamp="1594383962233" />
+    <state width="1638" height="302" key="GridCell.Tab.0.left/0.23.1680.945@0.23.1680.945" timestamp="1595830461420" />
     <state width="798" height="359" key="GridCell.Tab.0.left/0.23.1680.948@0.23.1680.948" timestamp="1594872547895" />
     <state width="798" height="359" key="GridCell.Tab.0.left/0.23.1680.951@0.23.1680.951" timestamp="1594972084973" />
-    <state width="798" height="359" key="GridCell.Tab.0.right" timestamp="1594972084973">
-      <screen x="0" y="23" width="1680" height="951" />
+    <state width="1638" height="302" key="GridCell.Tab.0.right" timestamp="1595830461421">
+      <screen x="0" y="23" width="1680" height="945" />
     </state>
     <state width="1638" height="357" key="GridCell.Tab.0.right/0.23.1680.942@0.23.1680.942" timestamp="1594398420923" />
-    <state width="1638" height="357" key="GridCell.Tab.0.right/0.23.1680.945@0.23.1680.945" timestamp="1594383962234" />
+    <state width="1638" height="302" key="GridCell.Tab.0.right/0.23.1680.945@0.23.1680.945" timestamp="1595830461421" />
     <state width="798" height="359" key="GridCell.Tab.0.right/0.23.1680.948@0.23.1680.948" timestamp="1594872547896" />
     <state width="798" height="359" key="GridCell.Tab.0.right/0.23.1680.951@0.23.1680.951" timestamp="1594972084973" />
     <state width="798" height="307" key="GridCell.Tab.1.bottom" timestamp="1594304241559">

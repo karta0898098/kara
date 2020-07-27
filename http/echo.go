@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"github.com/go-playground/validator/v10"
 	"github.com/karta0898098/kara/exception"
 	"github.com/karta0898098/kara/http/echo/middleware"
 	"github.com/labstack/echo/v4"
@@ -13,7 +14,11 @@ import (
 
 func NewEcho(config *Config) *echo.Echo {
 
+	echo.NotFoundHandler = EchoNotFoundHandler
+	echo.MethodNotAllowedHandler = EchoNotFoundHandler
+
 	e := echo.New()
+	e.Validator = NewEchoValidator()
 
 	if config.Mode == "release" {
 		e.Debug = true
@@ -77,4 +82,21 @@ func EchoErrorHandler(err error, c echo.Context) {
 		"message": appError.Message,
 		"details": appError.Details,
 	})
+}
+
+// EchoNotFoundHandler responds not found response.
+func EchoNotFoundHandler(c echo.Context) error {
+	return c.JSON(http.StatusNotFound, exception.ErrPageNotFound)
+}
+
+type EchoValidator struct {
+	validator *validator.Validate
+}
+
+func NewEchoValidator() *EchoValidator {
+	return &EchoValidator{validator: validator.New()}
+}
+
+func (e *EchoValidator) Validate(i interface{}) error {
+	return e.validator.Struct(i)
 }
