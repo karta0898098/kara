@@ -15,8 +15,8 @@ import (
 var (
 	// Teal ...
 	Teal = Color("\033[1;36m%s\033[0m")
-	// Yello ...
-	Yello = Color("\033[35m%s\033[0m")
+	// Yellow ...
+	Yellow = Color("\033[35m%s\033[0m")
 )
 
 var Logger zerolog.Logger
@@ -97,7 +97,7 @@ func Setup(config *Config) {
 			if err == nil {
 				t = time.Unix(int64(millisecond/1000), 0).Local().Format("2006/01/02 15:04:05")
 			}
-			return Yello(t)
+			return Yellow(t)
 		}
 		Logger = zerolog.New(output)
 	} else {
@@ -111,6 +111,7 @@ func Setup(config *Config) {
 			"env":    config.Env,
 		}).
 		Timestamp().
+		Caller().
 		Logger().
 		Level(level)
 }
