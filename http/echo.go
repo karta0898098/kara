@@ -21,14 +21,14 @@ func NewEcho(config *Config) *echo.Echo {
 	e.Validator = NewEchoValidator()
 
 	if config.Mode == "release" {
-		e.Debug = true
-		e.HideBanner = true
-		e.HidePort = false
-
-	} else {
 		e.Debug = false
 		e.HideBanner = true
 		e.HidePort = true
+
+	} else {
+		e.Debug = true
+		e.HideBanner = false
+		e.HidePort = false
 	}
 
 	e.HTTPErrorHandler = EchoErrorHandler

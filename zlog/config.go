@@ -7,6 +7,3 @@ type Config struct {
 	Local bool   `mapstructure:"local"`
 }
 
-func (c *Config) New() *Config {
-	return c
-}

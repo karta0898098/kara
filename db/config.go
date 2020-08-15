@@ -35,6 +35,3 @@ type Database struct {
 	WriteTimeout   string       `mapstructure:"write_timeout"`
 }
 
-func (c *Config) New() *Config {
-	return c
-}

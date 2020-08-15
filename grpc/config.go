@@ -5,6 +5,3 @@ type Config struct {
 	Port string `mapstructure:"port"`
 }
 
-func (c *Config) New() *Config {
-	return c
-}
