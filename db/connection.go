@@ -15,7 +15,6 @@ type Connection struct {
 }
 
 func NewConnection(config *Config) (*Connection, error) {
-
 	readDB, err := setupDatabase(&config.Read)
 	if err != nil {
 		return nil, err
@@ -24,6 +23,7 @@ func NewConnection(config *Config) (*Connection, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	readDB.LogMode(config.Read.Debug)
 	writeDB.LogMode(config.Write.Debug)
 

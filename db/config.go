@@ -15,9 +15,9 @@ const (
 )
 
 type Config struct {
-	Read    Database `mapstructure:"read"`
-	Write   Database `mapstructure:"write"`
-	Secrets string   `mapstructure:"secrets"`
+	Read     Database `mapstructure:"read"`
+	Write    Database `mapstructure:"write"`
+	Secrets  string   `mapstructure:"secrets"`
 }
 
 type Database struct {
@@ -34,4 +34,3 @@ type Database struct {
 	ReadTimeout    string       `mapstructure:"read_timeout"`
 	WriteTimeout   string       `mapstructure:"write_timeout"`
 }
-
