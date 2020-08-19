@@ -13,11 +13,9 @@ type Pagination struct {
 }
 
 // Where return gorm scope function
-func (p *Pagination) Where() func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		limit, offset := p.LimitAndOffset()
-		return db.Limit(limit).Offset(offset)
-	}
+func (p *Pagination) Where(db *gorm.DB) *gorm.DB {
+	limit, offset := p.LimitAndOffset()
+	return db.Limit(limit).Offset(offset)
 }
 
 // SetTotalCountAndPage 用來計算總數和分頁
