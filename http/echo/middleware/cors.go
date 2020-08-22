@@ -6,8 +6,6 @@ import (
 	"net/http"
 )
 
-
-
 func NewCORS() echo.MiddlewareFunc{
 	return  middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
