@@ -4,36 +4,38 @@ import (
 	"fmt"
 	"github.com/cenkalti/backoff/v4"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/pkg/errors"
 	"strconv"
 	"time"
 )
 
-type Connection struct {
-	ReadDB  *gorm.DB
-	WriteDB *gorm.DB
+type DatabaseType string
+
+const (
+	// MySQL ...
+	MySQL DatabaseType = "mysql"
+	// Postgres ...
+	Postgres DatabaseType = "postgres"
+)
+
+type Database struct {
+	Debug          bool         `mapstructure:"debug"`
+	Host           string       `mapstructure:"host"`
+	User           string       `mapstructure:"user"`
+	Port           int          `mapstructure:"port"`
+	Password       string       `mapstructure:"password"`
+	Name           string       `mapstructure:"name"`
+	Type           DatabaseType `mapstructure:"type"`
+	MaxIdleConns   int          `mapstructure:"max_idle_conns"`
+	MaxOpenConns   int          `mapstructure:"max_open_conns"`
+	MaxLifetimeSec int          `mapstructure:"max_lifetime"`
+	ReadTimeout    string       `mapstructure:"read_timeout"`
+	WriteTimeout   string       `mapstructure:"write_timeout"`
 }
 
-func NewConnection(config *Config) (*Connection, error) {
-	readDB, err := setupDatabase(&config.Read)
-	if err != nil {
-		return nil, err
-	}
-	writeDB, err := setupDatabase(&config.Write)
-	if err != nil {
-		return nil, err
-	}
-
-	readDB.LogMode(config.Read.Debug)
-	writeDB.LogMode(config.Write.Debug)
-
-	return &Connection{
-		ReadDB:  readDB,
-		WriteDB: writeDB,
-	}, nil
-}
-
-func setupDatabase(database *Database) (*gorm.DB, error) {
+func SetupDatabase(database *Database) (*gorm.DB, error) {
 	bo := backoff.NewExponentialBackOff()
 	bo.MaxElapsedTime = time.Duration(180) * time.Second
 

@@ -83,13 +83,13 @@ func Setup(config *Config) {
 			Out: os.Stdout,
 		}
 		output.FormatMessage = func(i interface{}) string {
-			return fmt.Sprintf("[ %s ]", i)
+			return fmt.Sprintf("[ %s ] \n", i)
 		}
 		output.FormatFieldName = func(i interface{}) string {
 			return fmt.Sprintf("%s:", Teal(i))
 		}
 		output.FormatFieldValue = func(i interface{}) string {
-			return fmt.Sprintf("%s", i)
+			return fmt.Sprintf("%s\n", i)
 		}
 		output.FormatTimestamp = func(i interface{}) string {
 			t := fmt.Sprintf("%s", i)
@@ -111,7 +111,6 @@ func Setup(config *Config) {
 			"env":    config.Env,
 		}).
 		Timestamp().
-		Caller().
 		Logger().
 		Level(level)
 }
