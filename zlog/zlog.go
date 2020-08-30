@@ -3,6 +3,7 @@ package zlog
 import (
 	"context"
 	"fmt"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
@@ -76,7 +77,6 @@ func Setup(config *Config) {
 	if config.Debug {
 		level = zerolog.DebugLevel
 	}
-
 
 	if config.Local {
 		output := zerolog.ConsoleWriter{

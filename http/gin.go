@@ -24,10 +24,6 @@ func NewGin(config *Config) *gin.Engine {
 }
 
 func RunGin(engine *gin.Engine, config *Config, lifecycle fx.Lifecycle) *gin.Engine {
-
-	//engine := NewGin(config)
-
-
 	srv := &http.Server{
 		Addr:    config.Port,
 		Handler: engine,

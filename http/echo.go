@@ -13,7 +13,6 @@ import (
 )
 
 func NewEcho(config *Config) *echo.Echo {
-
 	echo.NotFoundHandler = EchoNotFoundHandler
 	echo.MethodNotAllowedHandler = EchoNotFoundHandler
 
@@ -33,6 +32,7 @@ func NewEcho(config *Config) *echo.Echo {
 
 	e.HTTPErrorHandler = EchoErrorHandler
 	e.Pre(middleware.NewRequestIDMiddleware())
+	e.Use(middleware.NewLoggerMiddleware())
 	e.Use(middleware.NewErrorHandlingMiddleware())
 	e.Use(middleware.NewCORS())
 	e.Use(middleware.RecordErrorMiddleware)
