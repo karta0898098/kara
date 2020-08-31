@@ -21,6 +21,12 @@
   <component name="ChangeListManager">
     <list default="true" id="24c1a14e-31a7-4d11-8212-125ebd10882b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/condition/pagination.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/condition/pagination.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/condition/sorting.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/condition/sorting.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/condition/where.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/condition/where.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/connection.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/connection.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/rw/db/connection.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/rw/db/connection.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
@@ -87,8 +93,9 @@
       <method v="2" />
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

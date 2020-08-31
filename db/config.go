@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type Config struct {
@@ -14,9 +14,6 @@ func NewConnection(config *Config) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	db.LogMode(config.DB.Debug)
-	db.LogMode(config.DB.Debug)
 
 	return db, nil
 }

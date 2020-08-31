@@ -2,7 +2,7 @@ package condition
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type Sorting struct {

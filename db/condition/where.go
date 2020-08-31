@@ -2,7 +2,7 @@ package condition
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"strings"
 	"time"
 )
@@ -117,7 +117,6 @@ func (where *Where) Where(db *gorm.DB) *gorm.DB {
 		start := time.Unix(int64(sec), 0).UTC()
 		db = db.Where("deleted_at >= ?", start)
 	}
-
 
 	return db
 }

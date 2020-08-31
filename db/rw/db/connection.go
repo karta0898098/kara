@@ -1,8 +1,8 @@
 package db
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/karta0898098/kara/db"
+	"gorm.io/gorm"
 )
 
 type Connection struct {
@@ -20,13 +20,8 @@ func NewConnection(config *Config) (*Connection, error) {
 		return nil, err
 	}
 
-	readDB.LogMode(config.Read.Debug)
-	writeDB.LogMode(config.Write.Debug)
-
 	return &Connection{
 		ReadDB:  readDB,
 		WriteDB: writeDB,
 	}, nil
 }
-
-
