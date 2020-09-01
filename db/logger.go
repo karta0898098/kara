@@ -72,6 +72,7 @@ func (g *gormLogger) LogMode(level logger.LogLevel) logger.Interface {
 }
 
 func (g *gormLogger) Info(ctx context.Context, msg string, data ...interface{}) {
+	log.Debug().Msg("test call form gorm logger")
 	if g.LogLevel >= logger.Info {
 		log.Ctx(ctx).Info().Msgf(
 			g.infoStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
