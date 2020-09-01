@@ -53,7 +53,7 @@ func (gl *GormLogger) Printf(s string, v ...interface{}) {
 			"latency_human": latency.String(),
 			"rows_affected": rowsAffected,
 		}
-		gl.logger.Debug().Fields(fields).Msgf("\n%s\n%s\n%s\n%s\n", latencyStr, srcStr, sqlStr, rowsAffectedStr)
+		gl.logger.Debug().Fields(fields).Msgf("\n%s\n%v\n%v\n%v\n", latencyStr, srcStr, sqlStr, rowsAffectedStr)
 	} else {
 		gl.logger.Debug().Fields(map[string]interface{}{
 			"gorm_type": gormType,
