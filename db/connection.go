@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cenkalti/backoff/v4"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -73,13 +74,18 @@ func SetupDatabase(database *Database) (*gorm.DB, error) {
 		logLevel = logger.Info
 	}
 
-	newLogger := NewLogger(logger.Config{
+	//newLogger := NewLogger(logger.Config{
+	//	SlowThreshold: time.Second, // Slow SQL threshold
+	//	LogLevel:      logLevel,    // Log level
+	//	Colorful:      colorful,    // Disable color
+	//})
+
+	newLogger := logger.New(&log.Logger, logger.Config{
 		SlowThreshold: time.Second, // Slow SQL threshold
 		LogLevel:      logLevel,    // Log level
 		Colorful:      colorful,    // Disable color
 	})
 	var conn *gorm.DB
-
 
 	// 嘗試重新連線database
 	err := backoff.Retry(func() error {
