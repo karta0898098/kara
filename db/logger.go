@@ -1,156 +1,104 @@
 package db
 
 import (
-	"database/sql/driver"
-	"fmt"
-	"reflect"
-	"regexp"
-	"runtime"
+	"context"
+	"github.com/rs/zerolog/log"
+	"gorm.io/gorm/logger"
+	"gorm.io/gorm/utils"
 	"time"
-	"unicode"
-
-	"github.com/rs/zerolog"
 )
 
-// GormLogger is a custom logger for Gorm, making it use logrus.
-type GormLogger struct {
-	logger     zerolog.Logger
-	WithColor  bool
-}
-
-// Print handles log events from Gorm for the custom logger.
-func (gl *GormLogger) Printf(s string, v ...interface{}) {
-	messages := LogFormatter(v...)
-	gormType := messages[0]
-
-	var callers string
-	pc := make([]uintptr, 10) // at least 1 entry needed
-	n := runtime.Callers(8, pc)
-	for i := 1; i < n; i++ {
-		f := runtime.FuncForPC(pc[i])
-		file, line := f.FileLine(pc[i])
-		callers += fmt.Sprintf("\n%s:%d", file, line)
-	}
-	if gormType == "sql" {
-		src := messages[1]
-		latency := messages[3].(time.Duration)
-		sql := messages[4]
-		rowsAffected := messages[5]
-		latencyStr := latency.String()
-		srcStr := src
-		sqlStr := sql
-		rowsAffectedStr := rowsAffected
-		if gl.WithColor {
-			latencyStr = fmt.Sprintf("\033[33m[ %v ]\033[0m ", latency.String())
-			srcStr = fmt.Sprintf("\033[35m[ %v ]\033[0m ", src)
-			sqlStr = fmt.Sprintf("\033[34m[\n %v \n]\033[0m ", sql)
-			rowsAffectedStr = fmt.Sprintf("\033[36;31m[ %v %s ]\033[0m ", rowsAffected, "rows affected or returned")
-		}
-		fields := map[string]interface{}{
-			"gorm_type":     gormType,
-			"src":           src,
-			"latency":       int64(latency),
-			"latency_human": latency.String(),
-			"rows_affected": rowsAffected,
-		}
-		gl.logger.Debug().Fields(fields).Msgf("\n%s\n%v\n%v\n%v\n", latencyStr, srcStr, sqlStr, rowsAffectedStr)
-	} else {
-		gl.logger.Debug().Fields(map[string]interface{}{
-			"gorm_type": gormType,
-		}).Msgf("%s", messages[1:]...)
-	}
-}
-
-var (
-	sqlRegexp                = regexp.MustCompile(`\?`)
-	numericPlaceHolderRegexp = regexp.MustCompile(`\$\d+`)
+// Colors
+const (
+	Reset       = "\033[0m"
+	Red         = "\033[31m"
+	Green       = "\033[32m"
+	Yellow      = "\033[33m"
+	Blue        = "\033[34m"
+	Magenta     = "\033[35m"
+	Cyan        = "\033[36m"
+	White       = "\033[37m"
+	MagentaBold = "\033[35;1m"
+	RedBold     = "\033[31;1m"
+	YellowBold  = "\033[33;1m"
 )
 
-func isPrintable(s string) bool {
-	for _, r := range s {
-		if !unicode.IsPrint(r) {
-			return false
-		}
-	}
-	return true
+type gormLogger struct {
+	LogLevel                            logger.LogLevel
+	Config                              logger.Config
+	SlowThreshold                       time.Duration
+	infoStr, warnStr, errStr            string
+	traceStr, traceErrStr, traceWarnStr string
 }
 
-// LogFormatter for log formatter
-var LogFormatter = func(values ...interface{}) (messages []interface{}) {
-	if len(values) > 1 {
-		var (
-			sql             string
-			formattedValues []string
-			level           = values[0]
-			currentTime     = "\n\033[33m[" + time.Now().UTC().Format("2006-01-02 15:04:05") + "]\033[0m"
-			source          = fmt.Sprintf(" %v ", values[1])
-		)
+func NewLogger(config logger.Config) logger.Interface {
+	var (
+		infoStr      = "%s\n[info] "
+		warnStr      = "%s\n[warn] "
+		errStr       = "%s\n[error] "
+		traceStr     = "%s\n[%v] \n\t[rows:%d] \n\t%s"
+		traceWarnStr = "%s\n[%v] [\n\trows:%d] \n\t%s"
+		traceErrStr  = "%s %s\n[%v] \n\t[rows:%d] \n\t%s"
+	)
 
-		messages = []interface{}{level, source, currentTime}
+	if config.Colorful {
+		infoStr = Green + "%s\n" + Reset + Green + "[info] " + Reset
+		warnStr = Blue + "%s\n" + Reset + Magenta + "[warn] " + Reset
+		errStr = Magenta + "%s\n" + Reset + Red + "[error] " + Reset
+		traceStr = Green + "%s\n" + Reset + Yellow + "[%.3fms] " + Blue + "[rows:%d]" + Reset + " %s"
+		traceWarnStr = Green + "%s\n" + Reset + RedBold + "[%.3fms] " + Yellow + "[rows:%d]" + Magenta + " %s" + Reset
+		traceErrStr = RedBold + "%s " + MagentaBold + "%s\n" + Reset + Yellow + "[%.3fms] " + Blue + "[rows:%d]" + Reset + " %s"
+	}
+	return &gormLogger{
+		Config:       config,
+		infoStr:      infoStr,
+		warnStr:      warnStr,
+		errStr:       errStr,
+		traceStr:     traceStr,
+		traceWarnStr: traceWarnStr,
+		traceErrStr:  traceErrStr,
+	}
+}
 
-		if level == "sql" {
-			// duration
-			messages = append(messages, values[2].(time.Duration))
-			// sql
+func (g *gormLogger) LogMode(level logger.LogLevel) logger.Interface {
+	newlogger := *g
+	newlogger.LogLevel = level
+	return g
+}
 
-			for _, value := range values[4].([]interface{}) {
-				indirectValue := reflect.Indirect(reflect.ValueOf(value))
-				if indirectValue.IsValid() {
-					value = indirectValue.Interface()
-					if t, ok := value.(time.Time); ok {
-						formattedValues = append(formattedValues, fmt.Sprintf("'%v'", t.Format("2006-01-02 15:04:05")))
-					} else if b, ok := value.([]byte); ok {
-						if str := string(b); isPrintable(str) {
-							formattedValues = append(formattedValues, fmt.Sprintf("'%v'", str))
-						} else {
-							formattedValues = append(formattedValues, "'<binary>'")
-						}
-					} else if r, ok := value.(driver.Valuer); ok {
-						if value, err := r.Value(); err == nil && value != nil {
-							formattedValues = append(formattedValues, fmt.Sprintf("'%v'", value))
-						} else {
-							formattedValues = append(formattedValues, "NULL")
-						}
-					} else {
-						switch t := value.(type) {
-						case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, bool:
-							formattedValues = append(formattedValues, fmt.Sprintf("%v", value))
-						case []byte:
-							formattedValues = append(formattedValues, fmt.Sprintf("'%v'", string(t)))
-						default:
-							formattedValues = append(formattedValues, fmt.Sprintf("'%v'", value))
-						}
-					}
-				} else {
-					formattedValues = append(formattedValues, "NULL")
-				}
-			}
+func (g *gormLogger) Info(ctx context.Context, msg string, data ...interface{}) {
+	if g.LogLevel >= logger.Info {
+		log.Ctx(ctx).Info().Msgf(
+			g.infoStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
+	}
+}
 
-			// differentiate between $n placeholders or else treat like ?
-			if numericPlaceHolderRegexp.MatchString(values[3].(string)) {
-				sql = values[3].(string)
-				for index, value := range formattedValues {
-					placeholder := fmt.Sprintf(`\$%d([^\d]|$)`, index+1)
-					sql = regexp.MustCompile(placeholder).ReplaceAllString(sql, value+"$1")
-				}
-			} else {
-				formattedValuesLength := len(formattedValues)
-				for index, value := range sqlRegexp.Split(values[3].(string), -1) {
-					sql += value
-					if index < formattedValuesLength {
-						sql += formattedValues[index]
-					}
-				}
-			}
+func (g *gormLogger) Warn(ctx context.Context, msg string, data ...interface{}) {
+	if g.LogLevel >= logger.Warn {
+		log.Ctx(ctx).Warn().Msgf(
+			g.warnStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
+	}
+}
 
-			messages = append(messages, sql)
-			messages = append(messages, values[5].(int64)) // rowsAffected
-		} else {
-			messages = append(messages, "\033[31;1m")
-			messages = append(messages, values[2:]...)
-			messages = append(messages, "\033[0m")
+func (g *gormLogger) Error(ctx context.Context, msg string, data ...interface{}) {
+	if g.LogLevel >= logger.Error {
+		log.Ctx(ctx).Error().Msgf(g.errStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
+	}
+}
+
+func (g *gormLogger) Trace(ctx context.Context, begin time.Time, fc func() (string, int64), err error) {
+	if g.LogLevel > 0 {
+		elapsed := time.Since(begin)
+		switch {
+		case err != nil && g.LogLevel >= logger.Error:
+			sql, rows := fc()
+			log.Ctx(ctx).Error().Msgf(g.traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+		case elapsed > g.SlowThreshold && g.SlowThreshold != 0 && g.LogLevel >= logger.Warn:
+			sql, rows := fc()
+			log.Ctx(ctx).Warn().Msgf(g.traceWarnStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
+		case g.LogLevel >= logger.Info:
+			sql, rows := fc()
+			log.Ctx(ctx).Info().Msgf(g.traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		}
 	}
-
-	return
 }
