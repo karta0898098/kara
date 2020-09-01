@@ -80,6 +80,7 @@ func SetupDatabase(database *Database) (*gorm.DB, error) {
 	})
 	var conn *gorm.DB
 
+
 	// 嘗試重新連線database
 	err := backoff.Retry(func() error {
 		db, err := gorm.Open(dialector, &gorm.Config{

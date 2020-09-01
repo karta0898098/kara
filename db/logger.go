@@ -74,37 +74,38 @@ func (g *gormLogger) LogMode(level logger.LogLevel) logger.Interface {
 func (g *gormLogger) Info(ctx context.Context, msg string, data ...interface{}) {
 	log.Debug().Msg("test call form gorm logger")
 	if g.LogLevel >= logger.Info {
-		log.Ctx(ctx).Info().Msgf(
+		log.Printf(
 			g.infoStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
 	}
 }
 
 func (g *gormLogger) Warn(ctx context.Context, msg string, data ...interface{}) {
 	if g.LogLevel >= logger.Warn {
-		log.Ctx(ctx).Warn().Msgf(
+		log.Printf(
 			g.warnStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
 	}
 }
 
 func (g *gormLogger) Error(ctx context.Context, msg string, data ...interface{}) {
 	if g.LogLevel >= logger.Error {
-		log.Ctx(ctx).Error().Msgf(g.errStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
+		log.Printf(g.errStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
 	}
 }
 
 func (g *gormLogger) Trace(ctx context.Context, begin time.Time, fc func() (string, int64), err error) {
+
 	if g.LogLevel > 0 {
 		elapsed := time.Since(begin)
 		switch {
 		case err != nil && g.LogLevel >= logger.Error:
 			sql, rows := fc()
-			log.Ctx(ctx).Error().Msgf(g.traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			log.Printf(g.traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		case elapsed > g.SlowThreshold && g.SlowThreshold != 0 && g.LogLevel >= logger.Warn:
 			sql, rows := fc()
-			log.Ctx(ctx).Warn().Msgf(g.traceWarnStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			log.Printf(g.traceWarnStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		case g.LogLevel >= logger.Info:
 			sql, rows := fc()
-			log.Ctx(ctx).Info().Msgf(g.traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			log.Printf(g.traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		}
 	}
 }
