@@ -3,8 +3,8 @@ package db
 import (
 	"fmt"
 	"github.com/cenkalti/backoff/v4"
+	"github.com/karta0898098/kara/zlog"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -74,11 +74,7 @@ func SetupDatabase(database *Database) (*gorm.DB, error) {
 		logLevel = logger.Info
 	}
 	newLogger := logger.New(
-		//log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-		&GormLogger{
-			logger: log.With().Logger(),
-			WithColor: colorful,
-		},
+		&zlog.Logger,
 		logger.Config{
 			SlowThreshold: time.Second, // Slow SQL threshold
 			LogLevel:      logLevel,    // Log level
