@@ -2,6 +2,7 @@ package zlog
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -18,6 +19,22 @@ var (
 	// Yellow ...
 	Yellow = Color("\033[35m%s\033[0m")
 )
+
+const (
+	colorBlack = iota + 30
+	colorRed
+	colorGreen
+	colorYellow
+	colorBlue
+	colorMagenta
+	colorCyan
+	colorWhite
+
+	colorBold     = 1
+	colorDarkGray = 90
+)
+
+const spcae = "                    "
 
 var Logger zerolog.Logger
 
@@ -81,14 +98,44 @@ func Setup(config *Config) {
 		output := zerolog.ConsoleWriter{
 			Out: os.Stdout,
 		}
+		output.FormatLevel = func(i interface{}) string {
+			var l string
+			if ll, ok := i.(string); ok {
+				switch ll {
+				case "trace":
+					l = colorize("TRACE", colorMagenta)
+				case "debug":
+					l = colorize("DEBUG", colorYellow)
+				case "info":
+					l = colorize("INFO", colorGreen)
+				case "warn":
+					l = colorize("WARN", colorRed)
+				case "error":
+					l = colorize(colorize("ERROR", colorRed), colorBold)
+				case "fatal":
+					l = colorize(colorize("FATAL", colorRed), colorBold)
+				case "panic":
+					l = colorize(colorize("PANIC", colorRed), colorBold)
+				default:
+					l = colorize("???", colorBold)
+				}
+			} else {
+				if i == nil {
+					l = colorize("???", colorBold)
+				} else {
+					l = strings.ToUpper(fmt.Sprintf("%s", i))[0:3]
+				}
+			}
+			return fmt.Sprintf("|%s|", l)
+		}
 		output.FormatMessage = func(i interface{}) string {
-			return fmt.Sprintf("\n[\n%s\n]\n", i)
+			return fmt.Sprintf("[%s]\n", i)
 		}
 		output.FormatFieldName = func(i interface{}) string {
-			return fmt.Sprintf("%s:", Teal(i))
+			return fmt.Sprintf(spcae+"%s: ", Teal(i))
 		}
 		output.FormatFieldValue = func(i interface{}) string {
-			return fmt.Sprintf("%s \n", i)
+			return fmt.Sprintf("%s\n", i)
 		}
 		output.FormatTimestamp = func(i interface{}) string {
 			t := fmt.Sprintf("%v", i)
@@ -114,3 +161,7 @@ func Setup(config *Config) {
 		Level(level)
 }
 
+// colorize returns the string s wrapped in ANSI code c, unless disabled is true.
+func colorize(s interface{}, c int) string {
+	return fmt.Sprintf("\x1b[%dm%v\x1b[0m", c, s)
+}

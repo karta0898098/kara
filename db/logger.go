@@ -2,11 +2,12 @@ package db
 
 import (
 	"context"
+	"time"
+
 	"github.com/karta0898098/kara/ctxutil"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/utils"
-	"time"
 )
 
 // Colors
@@ -22,6 +23,10 @@ const (
 	MagentaBold = "\033[35;1m"
 	RedBold     = "\033[31;1m"
 	YellowBold  = "\033[33;1m"
+)
+
+const (
+	space = "                    "
 )
 
 type gormLogger struct {
@@ -46,9 +51,9 @@ func NewLogger(config logger.Config) logger.Interface {
 		infoStr = Green + "%s\n" + Reset + Green + "[info] " + Reset
 		warnStr = Blue + "%s\n" + Reset + Magenta + "[warn] " + Reset
 		errStr = Magenta + "%s\n" + Reset + Red + "[error] " + Reset
-		traceStr = "\t" + Green + "%s\n" + Reset + Yellow + "\t[%.3fms]\n " + Blue + "\t[rows:%d]\n" + Reset + "\t%s"
-		traceWarnStr = "\t" + Green + "%s\n" + Reset + RedBold + "\t[%.3fms]\n " + Yellow + "\t[rows:%d]\n" + Magenta + "\t%s" + Reset
-		traceErrStr = "\t" + RedBold + "%s " + MagentaBold + "%s\n" + Reset + Yellow + "\t[%.3fms] " + Blue + "\t[rows:%d]\n" + Reset + "\t%s"
+		traceStr = Green + " %s " + Reset + Yellow + "[%.3fms] " + Blue + "[rows:%d]\n" + Reset + space + "%s" + Reset
+		traceWarnStr = Green + "%s " + Reset + RedBold + "[%.3fms] " + Yellow + "[rows:%d]\n" + Magenta + space + "%s" + Reset
+		traceErrStr = RedBold + "%s " + MagentaBold + "%s" + Reset + Yellow + "[%.3fms] " + Blue + "[rows:%d]\n" + space + Reset + "%s" + Reset
 	}
 
 	l := &gormLogger{
