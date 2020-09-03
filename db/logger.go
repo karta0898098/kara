@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"github.com/karta0898098/kara/ctxutil"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/utils"
@@ -36,32 +37,32 @@ func NewLogger(config logger.Config) logger.Interface {
 		infoStr      = "%s\n[info] "
 		warnStr      = "%s\n[warn] "
 		errStr       = "%s\n[error] "
-		traceStr     = "%s\n[%v] [rows:%d] \n\t%s"
-		traceWarnStr = "%s\n[%v] [rows:%d] \n\t%s"
-		traceErrStr  = "%s %s\n[%v] [rows:%d] \n\t%s"
+		traceStr     = "%s\n[%v]\n[rows:%d]\n%s"
+		traceWarnStr = "%s\n[%v]\n[rows:%d]\n%s"
+		traceErrStr  = "%s\n%s\n[%v]\n[rows:%d]\n%s"
 	)
 
 	if config.Colorful {
 		infoStr = Green + "%s\n" + Reset + Green + "[info] " + Reset
 		warnStr = Blue + "%s\n" + Reset + Magenta + "[warn] " + Reset
 		errStr = Magenta + "%s\n" + Reset + Red + "[error] " + Reset
-		traceStr = Green + "%s\n" + Reset + Yellow + "[%.3fms] " + Blue + "[rows:%d]\n\t" + Reset + " %s"
-		traceWarnStr = Green + "%s\n" + Reset + RedBold + "[%.3fms] " + Yellow + "[rows:%d]\n\t" + Magenta + " %s" + Reset
-		traceErrStr = RedBold + "%s " + MagentaBold + "%s\n" + Reset + Yellow + "[%.3fms] " + Blue + "[rows:%d]\n\t" + Reset + " %s"
+		traceStr = "\t" + Green + "%s\n" + Reset + Yellow + "\t[%.3fms]\n " + Blue + "\t[rows:%d]\n" + Reset + "\t%s"
+		traceWarnStr = "\t" + Green + "%s\n" + Reset + RedBold + "\t[%.3fms]\n " + Yellow + "\t[rows:%d]\n" + Magenta + "\t%s" + Reset
+		traceErrStr = "\t" + RedBold + "%s " + MagentaBold + "%s\n" + Reset + Yellow + "\t[%.3fms] " + Blue + "\t[rows:%d]\n" + Reset + "\t%s"
 	}
 
 	l := &gormLogger{
-		Config:       config,
-		infoStr:      infoStr,
-		warnStr:      warnStr,
-		errStr:       errStr,
-		traceStr:     traceStr,
-		traceWarnStr: traceWarnStr,
-		traceErrStr:  traceErrStr,
+		LogLevel:      config.LogLevel,
+		SlowThreshold: config.SlowThreshold,
+		Config:        config,
+		infoStr:       infoStr,
+		warnStr:       warnStr,
+		errStr:        errStr,
+		traceStr:      traceStr,
+		traceWarnStr:  traceWarnStr,
+		traceErrStr:   traceErrStr,
 	}
 
-	l.LogMode(config.LogLevel)
-	l.SlowThreshold = config.SlowThreshold
 	return l
 }
 
@@ -72,39 +73,59 @@ func (g *gormLogger) LogMode(level logger.LogLevel) logger.Interface {
 }
 
 func (g *gormLogger) Info(ctx context.Context, msg string, data ...interface{}) {
+	currentLogger := log.With().Fields(map[string]interface{}{
+		"request_id": ctxutil.GetRequestID(ctx),
+		"db_log":     true,
+	}).Logger()
+
 	if g.LogLevel >= logger.Info {
-		log.Printf(
+		currentLogger.Info().Msgf(
 			g.infoStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
 	}
 }
 
 func (g *gormLogger) Warn(ctx context.Context, msg string, data ...interface{}) {
+	currentLogger := log.With().Fields(map[string]interface{}{
+		"request_id": ctxutil.GetRequestID(ctx),
+		"db_log":     true,
+	}).Logger()
+
 	if g.LogLevel >= logger.Warn {
-		log.Printf(
+		currentLogger.Warn().Msgf(
 			g.warnStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
 	}
 }
 
 func (g *gormLogger) Error(ctx context.Context, msg string, data ...interface{}) {
+	currentLogger := log.With().Fields(map[string]interface{}{
+		"request_id": ctxutil.GetRequestID(ctx),
+		"db_log":     true,
+	}).Logger()
+
 	if g.LogLevel >= logger.Error {
-		log.Printf(g.errStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
+		currentLogger.Error().Msgf(g.errStr+msg, append([]interface{}{utils.FileWithLineNum()}, data...)...)
 	}
 }
 
 func (g *gormLogger) Trace(ctx context.Context, begin time.Time, fc func() (string, int64), err error) {
+
+	currentLogger := log.With().Fields(map[string]interface{}{
+		"request_id": ctxutil.GetRequestID(ctx),
+		"db_log":     true,
+	}).Logger()
 
 	if g.LogLevel > 0 {
 		elapsed := time.Since(begin)
 		switch {
 		case err != nil && g.LogLevel >= logger.Error:
 			sql, rows := fc()
-			log.Printf(g.traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			currentLogger.Error().Msgf(g.traceErrStr, utils.FileWithLineNum(), err, float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		case elapsed > g.SlowThreshold && g.SlowThreshold != 0 && g.LogLevel >= logger.Warn:
 			sql, rows := fc()
-			log.Printf(g.traceWarnStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			currentLogger.Warn().Msgf(g.traceWarnStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		case g.LogLevel >= logger.Info:
 			sql, rows := fc()
-			log.Printf(g.traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
+			currentLogger.Info().Msgf(g.traceStr, utils.FileWithLineNum(), float64(elapsed.Nanoseconds())/1e6, rows, sql)
 		}
 	}
 }
