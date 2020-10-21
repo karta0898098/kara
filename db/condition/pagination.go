@@ -19,14 +19,12 @@ func NewPagination(page int, perPage int) *Pagination {
 	}
 }
 
-// LimitAndOffset return limit and offset
-func (p *Pagination) LimitAndOffset() (int, int) {
-	return p.PerPage, p.offset()
-}
+// LimitAndOffset return gorm scope function
+func (p *Pagination) LimitAndOffset(db *gorm.DB) *gorm.DB {
+	limit := p.PerPage
+	offset := p.offset()
 
-// Where return gorm scope function
-func (p *Pagination) Where(db *gorm.DB) *gorm.DB {
-	return db.Limit(p.PerPage).Offset(p.offset())
+	return db.Limit(limit).Offset(offset)
 }
 
 // SetTotalCountAndPage 用來計算總數和分頁
