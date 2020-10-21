@@ -71,7 +71,7 @@ func EchoErrorHandler(err error, c echo.Context) {
 	}
 
 	causeError := errors.Cause(err)
-	appError, ok := causeError.(*exception.AppError)
+	appError, ok := causeError.(*exception.Exception)
 	if !ok || appError == nil {
 		_ = c.JSON(http.StatusInternalServerError, exception.ErrServerInternal)
 		return

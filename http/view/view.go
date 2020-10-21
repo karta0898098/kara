@@ -10,7 +10,7 @@ import (
 
 func Error(c *gin.Context, err error) {
 	if err != nil {
-		errorOfApp, ok := errors.Cause(err).(*exception.AppError)
+		errorOfApp, ok := errors.Cause(err).(*exception.Exception)
 		if ok {
 			if errorOfApp.Status >= http.StatusInternalServerError {
 				log.Error().Msgf("%+v", err)

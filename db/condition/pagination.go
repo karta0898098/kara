@@ -6,16 +6,27 @@ const globalDefaultPerPage = 30
 
 // Pagination 用來表示分頁
 type Pagination struct {
-	Page       int `query:"page" json:"page" url:"page" description:"目前頁面"`
-	PerPage    int `query:"perPage" json:"perPage" url:"perPage" description:"每頁顯示多少筆"`
-	TotalCount int `json:"totalCount" url:"-" description:"總筆數"`
-	TotalPage  int `json:"totalPage" url:"-" description:"總頁數"`
+	Page       int // 目前頁面
+	PerPage    int // 每頁顯示多少筆
+	TotalCount int // 總筆數
+	TotalPage  int // 總頁數
+}
+
+func NewPagination(page int, perPage int) *Pagination {
+	return &Pagination{
+		Page:    page,
+		PerPage: perPage,
+	}
+}
+
+// LimitAndOffset return limit and offset
+func (p *Pagination) LimitAndOffset() (int, int) {
+	return p.PerPage, p.offset()
 }
 
 // Where return gorm scope function
 func (p *Pagination) Where(db *gorm.DB) *gorm.DB {
-	limit, offset := p.LimitAndOffset()
-	return db.Limit(limit).Offset(offset)
+	return db.Limit(p.PerPage).Offset(p.offset())
 }
 
 // SetTotalCountAndPage 用來計算總數和分頁
@@ -51,13 +62,8 @@ func (p *Pagination) CheckOrSetDefault(params ...int) *Pagination {
 	return p
 }
 
-// LimitAndOffset return limit and offset
-func (p *Pagination) LimitAndOffset() (int, int) {
-	return p.PerPage, p.Offset()
-}
-
-// Offset 計算 offset 的值
-func (p *Pagination) Offset() int {
+// offset 計算 offset 的值
+func (p *Pagination) offset() int {
 	if p.Page <= 0 {
 		return 0
 	}
