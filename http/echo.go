@@ -47,7 +47,7 @@ func RunEcho(engine *echo.Echo, config *Config, lifecycle fx.Lifecycle) *echo.Ec
 			go func() {
 				err = engine.Start(config.Port)
 				if err != nil {
-					log.Error().Msgf("Error echo server, err: %v", err)
+					log.Error().Err(err).Msg("start echo server failed.")
 				}
 			}()
 			return err

@@ -2,20 +2,17 @@ package db
 
 import (
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/cenkalti/backoff/v4"
 	"github.com/pkg/errors"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"strconv"
-	"time"
 )
-
-//import (
-//	_ "github.com/jinzhu/gorm/dialects/mysql"
-//	_ "github.com/jinzhu/gorm/dialects/postgres"
-//)
 
 type DatabaseType string
 
@@ -76,9 +73,8 @@ func SetupDatabase(database *Database) (*gorm.DB, error) {
 	newLogger := NewLogger(logger.Config{
 		SlowThreshold: time.Second, // Slow SQL threshold
 		LogLevel:      logLevel,    // Log level
-		Colorful:      colorful,       // Disable color
+		Colorful:      colorful,    // Disable color
 	})
-
 
 	var conn *gorm.DB
 

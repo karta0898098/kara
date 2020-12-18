@@ -10,8 +10,8 @@ import (
 func NewLoggerMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-
 			requestID := c.Request().Header.Get(echo.HeaderXRequestID)
+
 			start := time.Now()
 			err := next(c)
 			stop := time.Now()
@@ -22,7 +22,7 @@ func NewLoggerMiddleware() echo.MiddlewareFunc {
 			if status >= 500 {
 				logger = log.Error()
 			} else if status >= 400 {
-				logger = log.Warn()
+				logger = log.Info()
 			} else {
 				logger = log.Info()
 			}
@@ -34,7 +34,7 @@ func NewLoggerMiddleware() echo.MiddlewareFunc {
 				Int("status", status).
 				Err(err)
 
-			logger.Msg("access log")
+			logger.Msg("http access log.")
 			return nil
 		}
 	}

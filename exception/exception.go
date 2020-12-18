@@ -1,11 +1,12 @@
 package exception
 
 import (
-	"github.com/pkg/errors"
-	"google.golang.org/grpc/codes"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/pkg/errors"
+	"google.golang.org/grpc/codes"
 )
 
 var (

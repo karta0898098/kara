@@ -44,7 +44,7 @@ func NewErrorHandlingMiddleware() echo.MiddlewareFunc {
 }
 
 
-//RecordErrorMiddleware provide error middleware
+// RecordErrorMiddleware provide error middleware
 func RecordErrorMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		err := next(c)
@@ -57,13 +57,14 @@ func RecordErrorMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				logFields["request_method"] = req.Method
 				logFields["request_url"] = req.URL.String()
 			}
+			ctx := req.Context()
 
 			// 紀錄 Response 資料
 			resp := c.Response()
 			resp.After(func() {
 				logFields["response_status"] = resp.Status
 				// 根據狀態碼用不同等級來紀錄
-				logger := log.Ctx(req.Context()).With().Fields(logFields).Logger()
+				logger := log.Ctx(ctx).With().Fields(logFields).Logger()
 				if resp.Status >= http.StatusInternalServerError {
 					logger.Error().Msgf("%+v", err)
 				} else if resp.Status >= http.StatusBadRequest {

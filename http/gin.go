@@ -2,12 +2,14 @@ package http
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/karta0898098/kara/http/gin/middleware"
 	"github.com/rs/zerolog/log"
+
 	"go.uber.org/fx"
-	"net/http"
 )
 
 func NewGin(config *Config) *gin.Engine {
@@ -35,7 +37,7 @@ func RunGin(engine *gin.Engine, config *Config, lifecycle fx.Lifecycle) *gin.Eng
 			go func() {
 				err = srv.ListenAndServe()
 				if err != nil && err != http.ErrServerClosed {
-					log.Info().Msgf("shutting down server %v", err)
+					log.Error().Err(err).Msg("shutting down server.")
 				}
 			}()
 			return err
