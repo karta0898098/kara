@@ -20,42 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f718b64-756c-4a20-9c60-b4465b43589c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/db/example/main_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/client.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/example/echo/example.pb.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/example/echo/example.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/example/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/example/main_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/logging/dump.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/logging/log.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/module.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/recovery/recovery.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/http/echo/middleware/dump.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/http/example/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/http/example/main_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trace/tracer.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/zlog/example/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ctxutil/util.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/condition/sorting.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/condition/sorting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/condition/where.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/condition/where.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/connection.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/connection.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/example/mian.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/example/mian.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/logger.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exception/exception.go" beforeDir="false" afterPath="$PROJECT_DIR$/exception/exception.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grpc/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/grpc/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grpc/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/grpc/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/echo.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/echo.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/echo/middleware/error.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/echo/middleware/error.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/echo/middleware/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/echo/middleware/logger.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/echo/middleware/request_id.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/echo/middleware/trace_id.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/gin.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/gin.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zlog/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/zlog/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zlog/zlog.go" beforeDir="false" afterPath="$PROJECT_DIR$/zlog/log.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,30 +158,30 @@
       <screen x="1792" y="25" width="1920" height="966" />
     </state>
     <state x="1892" y="125" width="1720" height="766" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608260710010" />
-    <state width="1878" height="279" key="GridCell.Tab.0.bottom" timestamp="1608270076141">
+    <state width="1878" height="279" key="GridCell.Tab.0.bottom" timestamp="1608270816679">
       <screen x="1792" y="25" width="1920" height="966" />
     </state>
     <state width="1750" height="248" key="GridCell.Tab.0.bottom/0.25.1792.1007@0.25.1792.1007" timestamp="1608201175643" />
     <state width="1750" height="194" key="GridCell.Tab.0.bottom/0.25.1792.1009@0.25.1792.1009" timestamp="1607423548760" />
-    <state width="1878" height="279" key="GridCell.Tab.0.bottom/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270076141" />
-    <state width="1878" height="279" key="GridCell.Tab.0.center" timestamp="1608270076140">
+    <state width="1878" height="279" key="GridCell.Tab.0.bottom/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270816679" />
+    <state width="1878" height="279" key="GridCell.Tab.0.center" timestamp="1608270816678">
       <screen x="1792" y="25" width="1920" height="966" />
     </state>
     <state width="1750" height="248" key="GridCell.Tab.0.center/0.25.1792.1007@0.25.1792.1007" timestamp="1608201175642" />
     <state width="1750" height="194" key="GridCell.Tab.0.center/0.25.1792.1009@0.25.1792.1009" timestamp="1607423548760" />
-    <state width="1878" height="279" key="GridCell.Tab.0.center/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270076140" />
-    <state width="1878" height="279" key="GridCell.Tab.0.left" timestamp="1608270076140">
+    <state width="1878" height="279" key="GridCell.Tab.0.center/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270816678" />
+    <state width="1878" height="279" key="GridCell.Tab.0.left" timestamp="1608270816678">
       <screen x="1792" y="25" width="1920" height="966" />
     </state>
     <state width="1750" height="248" key="GridCell.Tab.0.left/0.25.1792.1007@0.25.1792.1007" timestamp="1608201175641" />
     <state width="1750" height="194" key="GridCell.Tab.0.left/0.25.1792.1009@0.25.1792.1009" timestamp="1607423548759" />
-    <state width="1878" height="279" key="GridCell.Tab.0.left/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270076140" />
-    <state width="1878" height="279" key="GridCell.Tab.0.right" timestamp="1608270076141">
+    <state width="1878" height="279" key="GridCell.Tab.0.left/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270816678" />
+    <state width="1878" height="279" key="GridCell.Tab.0.right" timestamp="1608270816678">
       <screen x="1792" y="25" width="1920" height="966" />
     </state>
     <state width="1750" height="248" key="GridCell.Tab.0.right/0.25.1792.1007@0.25.1792.1007" timestamp="1608201175642" />
     <state width="1750" height="194" key="GridCell.Tab.0.right/0.25.1792.1009@0.25.1792.1009" timestamp="1607423548760" />
-    <state width="1878" height="279" key="GridCell.Tab.0.right/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270076141" />
+    <state width="1878" height="279" key="GridCell.Tab.0.right/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270816678" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -9,7 +9,7 @@ require (
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-contrib/logger v0.0.2
 	github.com/gin-gonic/gin v1.6.3
-	github.com/go-playground/validator/v10 v10git.3.0
+	github.com/go-playground/validator/v10 v10
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/golang/protobuf v1.4.2
 	github.com/google/uuid v1.1.1
