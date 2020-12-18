@@ -22,8 +22,15 @@ func main() {
 	log.Trace().Msg("call")
 
 	ctx := context.Background()
-	logger := log.With().Str("trace_id", "12345").Logger()
-	ctx = logger.WithContext(ctx)
-
+	ctx = WithValue(ctx,"trace_id","1234567")
 	log.Ctx(ctx).Info().Msg("call")
+}
+
+func WithValue(ctx context.Context, key string, value interface{}) context.Context {
+	ctx = context.WithValue(ctx, key, value)
+	logger := log.With().Fields(map[string]interface{}{
+		key: value,
+	}).Logger()
+	ctx = logger.WithContext(ctx)
+	return ctx
 }

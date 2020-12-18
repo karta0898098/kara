@@ -1,16 +1,17 @@
 package middleware
 
 import (
+	"time"
+
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 func NewLoggerMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			requestID := c.Request().Header.Get(echo.HeaderXRequestID)
+			traceID := c.Request().Header.Get(echo.HeaderXRequestID)
 
 			start := time.Now()
 			err := next(c)
@@ -27,10 +28,11 @@ func NewLoggerMiddleware() echo.MiddlewareFunc {
 				logger = log.Info()
 			}
 
-			logger.Str("method", c.Request().Method).
+			logger.
+				Str("method", c.Request().Method).
 				Str("uri", c.Request().RequestURI).
-				Str("request_id", requestID).
-				Str("latency_human",stop.Sub(start).String()).
+				Str("trace_id", traceID).
+				Str("latency_human", stop.Sub(start).String()).
 				Int("status", status).
 				Err(err)
 

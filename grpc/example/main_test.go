@@ -6,7 +6,7 @@ import (
 
 	"github.com/karta0898098/kara/grpc"
 	pb "github.com/karta0898098/kara/grpc/example/echo"
-	"github.com/karta0898098/kara/metrics"
+	"github.com/karta0898098/kara/trace"
 	"github.com/karta0898098/kara/zlog"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/suite"
@@ -88,12 +88,12 @@ func (s *testSuite) TestHandler_Echo() {
 	for _, tt := range tests {
 		tt.args.ctx = context.WithValue(
 			tt.args.ctx,
-			metrics.DefaultTraceID,
+			trace.DefaultTraceID,
 			tt.args.traceID,
 		)
 		reply, err := client.Echo(tt.args.ctx, tt.args.req)
 		s.Equal(nil, err)
 		s.Equal(tt.want.Msg, reply.Msg)
-		s.Equal(tt.traceID, metrics.GetTraceID(tt.args.ctx))
+		s.Equal(tt.traceID, trace.GetTraceID(tt.args.ctx))
 	}
 }

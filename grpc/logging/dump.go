@@ -36,10 +36,13 @@ func requestDump(ctx context.Context, info *grpc.UnaryServerInfo, request bool, 
 		return
 	}
 
+	dict := zerolog.Dict()
+
 	if md, ok := metadata.FromIncomingContext(ctx); ok {
 		header, err := json.Marshal(&md)
 		if err == nil {
-			logger = logger.With().RawJSON("header", header).Logger()
+			dict.RawJSON("header", header)
+			// logger = logger.With().RawJSON("header", header).Logger()
 		}
 	}
 
@@ -48,7 +51,8 @@ func requestDump(ctx context.Context, info *grpc.UnaryServerInfo, request bool, 
 		msg := protoMessage{protoMsg}
 		buf, err := msg.MarshalJSON()
 		if err == nil {
-			logger.Info().RawJSON("dump", buf).Msg("request dump")
+			dict.RawJSON("body", buf)
+			logger.Info().Dict("dump", dict).Msg("grpc request dump.")
 		}
 	}
 }
@@ -62,6 +66,6 @@ func replayDump(ctx context.Context, info *grpc.UnaryServerInfo, request bool, l
 	if ok {
 		msg := protoMessage{protoMsg}
 		buf, _ := msg.MarshalJSON()
-		logger.Info().RawJSON("dump", buf).Msg("replay dump")
+		logger.Info().Dict("dump", zerolog.Dict().RawJSON("body", buf)).Msg("grpc replay dump.")
 	}
 }

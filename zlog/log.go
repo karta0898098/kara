@@ -147,10 +147,8 @@ func Setup(config *Config) {
 
 	log.Logger = Logger.Hook(severityHook{}).
 		With().
-		Fields(map[string]interface{}{
-			"app_id": config.AppID,
-			"env":    config.Env,
-		}).
+		Str("app_id", config.AppID).
+		Str("env", config.Env).
 		Timestamp().
 		Logger().
 		Level(zerolog.Level(level))

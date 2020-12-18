@@ -5,7 +5,7 @@ import (
 	"net"
 
 	"github.com/google/uuid"
-	"github.com/karta0898098/kara/metrics"
+	"github.com/karta0898098/kara/trace"
 	"github.com/rs/zerolog/log"
 
 	"google.golang.org/grpc"
@@ -30,7 +30,7 @@ func UnaryServerInterceptor(dump bool) grpc.UnaryServerInterceptor {
 		}
 
 		traceID = getTraceID(ctx)
-		ctx = context.WithValue(ctx, metrics.DefaultTraceID, traceID)
+		ctx = context.WithValue(ctx, trace.DefaultTraceID, traceID)
 
 		logger :=
 			log.With().
@@ -39,7 +39,7 @@ func UnaryServerInterceptor(dump bool) grpc.UnaryServerInterceptor {
 				Str("trace_id", traceID).
 				Logger()
 
-		logger.Info().Msg("grpc access log")
+		logger.Info().Msg("grpc access log.")
 
 		requestDump(ctx, info, dump, logger, req, nil)
 		resp, err := handler(ctx, req)
@@ -56,11 +56,11 @@ func UnaryClientInterceptor() grpc.UnaryClientInterceptor {
 			md = metadata.Pairs()
 		}
 
-		traceID := metrics.GetTraceID(ctx)
+		traceID := trace.GetTraceID(ctx)
 		if traceID == "" {
 			traceID = uuid.New().String()
 		}
-		md.Set(metrics.DefaultTraceID, traceID)
+		md.Set(trace.DefaultTraceID, traceID)
 
 		ctx = metadata.NewOutgoingContext(ctx, md)
 
@@ -75,7 +75,7 @@ func getTraceID(ctx context.Context) string {
 
 	md, ok := metadata.FromIncomingContext(ctx)
 	if ok {
-		meta := md.Get(metrics.DefaultTraceID)
+		meta := md.Get(trace.DefaultTraceID)
 		if len(meta) > 0 {
 			requestID = meta[0]
 		}

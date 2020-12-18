@@ -30,7 +30,10 @@
       <change afterPath="$PROJECT_DIR$/grpc/logging/log.go" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/grpc/module.go" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/grpc/recovery/recovery.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/metrics/tracer.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/http/echo/middleware/dump.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/http/example/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/http/example/main_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/trace/tracer.go" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/zlog/example/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -45,10 +48,11 @@
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grpc/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/grpc/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grpc/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/grpc/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http/echo.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/echo.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http/echo/middleware/error.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/echo/middleware/error.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http/echo/middleware/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/echo/middleware/logger.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/echo/middleware/request_id.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/echo/middleware/request_id.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/http/echo/middleware/request_id.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/echo/middleware/trace_id.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/http/gin.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/gin.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/zlog/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/zlog/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/zlog/zlog.go" beforeDir="false" afterPath="$PROJECT_DIR$/zlog/log.go" afterDir="false" />
@@ -93,20 +97,21 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/grpc/example/echo" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/grpc/example" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/grpc/example/echo" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/http/example" />
+      <recent name="$PROJECT_DIR$/grpc/example" />
+    </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/karta0898098/kara/zlog/example">
-    <configuration name="go build github.com/karta0898098/kara/db/example" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Go Test.TestRunEcho in github.com/karta0898098/kara/http/example">
+    <configuration name="go build github.com/karta0898098/kara/http/example" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="kara" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/db/example/mian.go" />
-      <package value="github.com/karta0898098/kara/db/example" />
+      <filePath value="$PROJECT_DIR$/http/example/main.go" />
+      <package value="github.com/karta0898098/kara/http/example" />
       <directory value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
@@ -117,17 +122,6 @@
       <filePath value="$PROJECT_DIR$/zlog/example/main.go" />
       <package value="github.com/karta0898098/kara/zlog/example" />
       <directory value="$PROJECT_DIR$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestGrpc in github.com/karta0898098/kara/grpc/example" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="kara" />
-      <working_directory value="$PROJECT_DIR$/grpc/example" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="github.com/karta0898098/kara/grpc/example" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <pattern value="^\QTestGrpc\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestHandler_Echo in github.com/karta0898098/kara/grpc/example" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -141,24 +135,35 @@
       <filePath value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
-    <configuration name="Test_log in github.com/karta0898098/kara/db/example" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestRunEcho in github.com/karta0898098/kara/http" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="kara" />
-      <working_directory value="$PROJECT_DIR$/db/example" />
-      <parameters value=" -testify.m ^Test_log$" />
+      <working_directory value="$PROJECT_DIR$/http" />
+      <parameters value=" -testify.m ^TestRunEcho$" />
       <framework value="gotest" />
       <kind value="PACKAGE" />
-      <package value="github.com/karta0898098/kara/db/example" />
+      <package value="github.com/karta0898098/kara/http" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestRunEcho in github.com/karta0898098/kara/http/example" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="kara" />
+      <working_directory value="$PROJECT_DIR$/http/example" />
+      <parameters value=" -testify.m ^TestRunEcho$" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/karta0898098/kara/http/example" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build github.com/karta0898098/kara/zlog/example" />
-        <item itemvalue="Go Test.Test_log in github.com/karta0898098/kara/db/example" />
-        <item itemvalue="Go Build.go build github.com/karta0898098/kara/db/example" />
+        <item itemvalue="Go Test.TestRunEcho in github.com/karta0898098/kara/http/example" />
+        <item itemvalue="Go Build.go build github.com/karta0898098/kara/http/example" />
         <item itemvalue="Go Test.TestHandler_Echo in github.com/karta0898098/kara/grpc/example" />
-        <item itemvalue="Go Test.TestGrpc in github.com/karta0898098/kara/grpc/example" />
+        <item itemvalue="Go Test.TestRunEcho in github.com/karta0898098/kara/http" />
+        <item itemvalue="Go Build.go build github.com/karta0898098/kara/zlog/example" />
       </list>
     </recent_temporary>
   </component>
@@ -182,29 +187,44 @@
     <integration-enabled>true</integration-enabled>
   </component>
   <component name="WindowStateProjectService">
-    <state width="1878" height="248" key="GridCell.Tab.0.bottom" timestamp="1608254726117">
+    <state x="1892" y="125" width="1720" height="766" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1608260710010">
+      <screen x="1792" y="25" width="1920" height="966" />
+    </state>
+    <state x="1892" y="125" width="1720" height="766" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608260710010" />
+    <state width="1878" height="279" key="GridCell.Tab.0.bottom" timestamp="1608270076141">
       <screen x="1792" y="25" width="1920" height="966" />
     </state>
     <state width="1750" height="248" key="GridCell.Tab.0.bottom/0.25.1792.1007@0.25.1792.1007" timestamp="1608201175643" />
     <state width="1750" height="194" key="GridCell.Tab.0.bottom/0.25.1792.1009@0.25.1792.1009" timestamp="1607423548760" />
-    <state width="1878" height="248" key="GridCell.Tab.0.bottom/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608254726117" />
-    <state width="1878" height="248" key="GridCell.Tab.0.center" timestamp="1608254726116">
+    <state width="1878" height="279" key="GridCell.Tab.0.bottom/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270076141" />
+    <state width="1878" height="279" key="GridCell.Tab.0.center" timestamp="1608270076140">
       <screen x="1792" y="25" width="1920" height="966" />
     </state>
     <state width="1750" height="248" key="GridCell.Tab.0.center/0.25.1792.1007@0.25.1792.1007" timestamp="1608201175642" />
     <state width="1750" height="194" key="GridCell.Tab.0.center/0.25.1792.1009@0.25.1792.1009" timestamp="1607423548760" />
-    <state width="1878" height="248" key="GridCell.Tab.0.center/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608254726116" />
-    <state width="1878" height="248" key="GridCell.Tab.0.left" timestamp="1608254726116">
+    <state width="1878" height="279" key="GridCell.Tab.0.center/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270076140" />
+    <state width="1878" height="279" key="GridCell.Tab.0.left" timestamp="1608270076140">
       <screen x="1792" y="25" width="1920" height="966" />
     </state>
     <state width="1750" height="248" key="GridCell.Tab.0.left/0.25.1792.1007@0.25.1792.1007" timestamp="1608201175641" />
     <state width="1750" height="194" key="GridCell.Tab.0.left/0.25.1792.1009@0.25.1792.1009" timestamp="1607423548759" />
-    <state width="1878" height="248" key="GridCell.Tab.0.left/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608254726116" />
-    <state width="1878" height="248" key="GridCell.Tab.0.right" timestamp="1608254726117">
+    <state width="1878" height="279" key="GridCell.Tab.0.left/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270076140" />
+    <state width="1878" height="279" key="GridCell.Tab.0.right" timestamp="1608270076141">
       <screen x="1792" y="25" width="1920" height="966" />
     </state>
     <state width="1750" height="248" key="GridCell.Tab.0.right/0.25.1792.1007@0.25.1792.1007" timestamp="1608201175642" />
     <state width="1750" height="194" key="GridCell.Tab.0.right/0.25.1792.1009@0.25.1792.1009" timestamp="1607423548760" />
-    <state width="1878" height="248" key="GridCell.Tab.0.right/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608254726117" />
+    <state width="1878" height="279" key="GridCell.Tab.0.right/1792.25.1920.966/0.25.1792.1095@1792.25.1920.966" timestamp="1608270076141" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/http/example/main_test.go</url>
+          <line>27</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

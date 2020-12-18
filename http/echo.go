@@ -2,17 +2,20 @@ package http
 
 import (
 	"context"
+	"net/http"
+
+	"github.com/bwmarrin/snowflake"
 	"github.com/go-playground/validator/v10"
 	"github.com/karta0898098/kara/exception"
 	"github.com/karta0898098/kara/http/echo/middleware"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+
 	"go.uber.org/fx"
-	"net/http"
 )
 
-func NewEcho(config *Config) *echo.Echo {
+func NewEcho(config *Config, node *snowflake.Node) *echo.Echo {
 	echo.NotFoundHandler = EchoNotFoundHandler
 	echo.MethodNotAllowedHandler = EchoNotFoundHandler
 
@@ -31,11 +34,15 @@ func NewEcho(config *Config) *echo.Echo {
 	}
 
 	e.HTTPErrorHandler = EchoErrorHandler
-	e.Pre(middleware.NewRequestIDMiddleware())
+	e.Pre(middleware.NewTraceMiddleware(node))
 	e.Use(middleware.NewLoggerMiddleware())
 	e.Use(middleware.NewErrorHandlingMiddleware())
 	e.Use(middleware.NewCORS())
 	e.Use(middleware.RecordErrorMiddleware)
+
+	if config.Dump{
+		e.Use(middleware.NewEchoDumpMiddleware())
+	}
 
 	return e
 }
@@ -47,7 +54,7 @@ func RunEcho(engine *echo.Echo, config *Config, lifecycle fx.Lifecycle) *echo.Ec
 			go func() {
 				err = engine.Start(config.Port)
 				if err != nil {
-					log.Error().Err(err).Msg("start echo server failed.")
+					log.Error().Err(err).Msg("run echo http server failed.")
 				}
 			}()
 			return err
