@@ -41,11 +41,12 @@ type exception struct {
 	GRPCCode codes.Code             `json:"grpc_code"`
 }
 
-func NewException(code int, status int, message string) *exception {
+func NewException(code int, status int, message string, grpcCode codes.Code) *exception {
 	return &exception{
 		Code:    code,
 		Status:  status,
 		Message: message,
+		GRPCCode: grpcCode,
 	}
 }
 
