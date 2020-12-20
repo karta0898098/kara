@@ -17,7 +17,6 @@ func main() {
 		Env:   "local",
 		AppID: "db_test",
 		Debug: true,
-		Local: true,
 	})
 
 	conn, err := db.NewConnection(&db.Config{

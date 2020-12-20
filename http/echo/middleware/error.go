@@ -18,11 +18,11 @@ func NewErrorHandlingMiddleware() echo.MiddlewareFunc {
 				if r := recover(); r != nil {
 					trace := make([]byte, 4096)
 					runtime.Stack(trace, true)
-					requestID := c.Request().Header.Get(echo.HeaderXRequestID)
+					traceID := c.Request().Header.Get(echo.HeaderXRequestID)
 					customFields := map[string]interface{}{
 						"url":         c.Request().RequestURI,
 						"stack_error": string(trace),
-						"request_id":  requestID,
+						"request_id":  traceID,
 					}
 					err, ok := r.(error)
 					if !ok {
@@ -35,7 +35,7 @@ func NewErrorHandlingMiddleware() echo.MiddlewareFunc {
 					logger := log.With().Fields(customFields).Logger()
 					logger.Error().Msgf("http: unknown error: %v", err)
 
-					_ = c.JSON(500, errors.Wrap(exception.ErrServerInternal, err.Error()))
+					_ = c.JSON(500, errors.Wrap(exception.ErrInternal, err.Error()))
 				}
 			}()
 			return next(c)

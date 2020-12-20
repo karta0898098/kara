@@ -15,6 +15,7 @@ import (
 	"go.uber.org/fx"
 )
 
+// NewEcho new echo http engine constructor
 func NewEcho(config *Config, node *snowflake.Node) *echo.Echo {
 	echo.NotFoundHandler = EchoNotFoundHandler
 	echo.MethodNotAllowedHandler = EchoNotFoundHandler
@@ -40,13 +41,14 @@ func NewEcho(config *Config, node *snowflake.Node) *echo.Echo {
 	e.Use(middleware.NewCORS())
 	e.Use(middleware.RecordErrorMiddleware)
 
-	if config.Dump{
+	if config.Dump {
 		e.Use(middleware.NewEchoDumpMiddleware())
 	}
 
 	return e
 }
 
+// RunEcho for use uber fx to start http service
 func RunEcho(engine *echo.Echo, config *Config, lifecycle fx.Lifecycle) *echo.Echo {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -54,6 +56,10 @@ func RunEcho(engine *echo.Echo, config *Config, lifecycle fx.Lifecycle) *echo.Ec
 			go func() {
 				err = engine.Start(config.Port)
 				if err != nil {
+					if errors.Is(err, http.ErrServerClosed) {
+						log.Info().Msg("http server close.")
+						return
+					}
 					log.Error().Err(err).Msg("run echo http server failed.")
 				}
 			}()
@@ -66,6 +72,7 @@ func RunEcho(engine *echo.Echo, config *Config, lifecycle fx.Lifecycle) *echo.Ec
 	return engine
 }
 
+// EchoErrorHandler for handle error to http error
 func EchoErrorHandler(err error, c echo.Context) {
 	if err == nil {
 		return
@@ -77,33 +84,34 @@ func EchoErrorHandler(err error, c echo.Context) {
 		return
 	}
 
-	causeError := errors.Cause(err)
-	appError, ok := causeError.(*exception.Exception)
-	if !ok || appError == nil {
-		_ = c.JSON(http.StatusInternalServerError, exception.ErrServerInternal)
+	appException := exception.TryConvert(err)
+	if appException == nil {
+		_ = c.JSON(http.StatusInternalServerError, exception.ErrInternal)
 		return
 	}
 
-	_ = c.JSON(appError.Status, map[string]interface{}{
-		"code":    appError.Code,
-		"message": appError.Message,
-		"details": appError.Details,
-	})
+	status, payload := appException.ToView()
+
+	_ = c.JSON(status, payload)
 }
 
 // EchoNotFoundHandler responds not found response.
 func EchoNotFoundHandler(c echo.Context) error {
-	return c.JSON(http.StatusNotFound, exception.ErrPageNotFound)
+	status, payload := exception.ErrPageNotFound.ToView()
+	return c.JSON(status, payload)
 }
 
+// EchoValidator fot echo default validator
 type EchoValidator struct {
 	validator *validator.Validate
 }
 
+// NewEchoValidator new echo validator
 func NewEchoValidator() *EchoValidator {
 	return &EchoValidator{validator: validator.New()}
 }
 
+// Validate for echo validator interface
 func (e *EchoValidator) Validate(i interface{}) error {
 	return e.validator.Struct(i)
 }

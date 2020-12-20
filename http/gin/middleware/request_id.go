@@ -11,19 +11,19 @@ const headerXRequestID = "X-Request-ID"
 
 func NewRequestIDMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		requestID := c.GetHeader(headerXRequestID)
+		traceID := c.GetHeader(headerXRequestID)
 
-		if requestID == "" {
-			requestID = uuid.New().String()
-			c.Header(headerXRequestID, requestID)
+		if traceID == "" {
+			traceID = uuid.New().String()
+			c.Header(headerXRequestID, traceID)
 		}
 
-		logger := log.With().Str("request_id", requestID).Logger()
+		logger := log.With().Str("trace_id", traceID).Logger()
 		ctx := logger.WithContext(c.Request.Context())
-		ctx = context.WithValue(ctx, headerXRequestID, requestID)
+		ctx = context.WithValue(ctx, headerXRequestID, traceID)
 		ctx = logger.WithContext(ctx)
 		// Set X-Request-Id header
-		c.Header(headerXRequestID, requestID)
+		c.Header(headerXRequestID, traceID)
 		c.Next()
 	}
 }
