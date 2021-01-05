@@ -2,14 +2,14 @@ package http
 
 import (
 	"context"
+	stderrors "errors"
 	"net/http"
 
 	"github.com/bwmarrin/snowflake"
 	"github.com/go-playground/validator/v10"
-	"github.com/karta0898098/kara/exception"
+	"github.com/karta0898098/kara/errors"
 	"github.com/karta0898098/kara/http/echo/middleware"
 	"github.com/labstack/echo/v4"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
 	"go.uber.org/fx"
@@ -56,7 +56,7 @@ func RunEcho(engine *echo.Echo, config *Config, lifecycle fx.Lifecycle) *echo.Ec
 			go func() {
 				err = engine.Start(config.Port)
 				if err != nil {
-					if errors.Is(err, http.ErrServerClosed) {
+					if stderrors.Is(err, http.ErrServerClosed) {
 						log.Info().Msg("http server close.")
 						return
 					}
@@ -84,20 +84,21 @@ func EchoErrorHandler(err error, c echo.Context) {
 		return
 	}
 
-	appException := exception.TryConvert(err)
+	appException := errors.TryConvert(err)
 	if appException == nil {
-		_ = c.JSON(http.StatusInternalServerError, exception.ErrInternal)
+		status, payload := errors.ErrInternal.ToRestfulView()
+		_ = c.JSON(status, payload)
 		return
 	}
 
-	status, payload := appException.ToView()
+	status, payload := appException.ToRestfulView()
 
 	_ = c.JSON(status, payload)
 }
 
 // EchoNotFoundHandler responds not found response.
 func EchoNotFoundHandler(c echo.Context) error {
-	status, payload := exception.ErrPageNotFound.ToView()
+	status, payload := errors.ErrPageNotFound.ToRestfulView()
 	return c.JSON(status, payload)
 }
 

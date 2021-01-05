@@ -34,36 +34,6 @@ func main() {
 		fx.Populate(&router),
 	)
 
-	// router.Use(middleware.BodyDumpWithConfig(middleware.BodyDumpConfig{
-	// 	Skipper: middleware.DefaultSkipper,
-	// 	Handler: func(ctx echo.Context, req []byte, resp []byte) {
-	// 		var (
-	// 			reqDict  *zerolog.Event
-	// 			respDict *zerolog.Event
-	// 		)
-	//
-	// 		reqDict = zerolog.Dict()
-	// 		respDict = zerolog.Dict()
-	//
-	// 		if len(req) > 0 {
-	// 			reqDict.RawJSON("body", req)
-	// 		}
-	// 		log.Ctx(ctx.Request().Context()).
-	// 			Info().
-	// 			Dict("dump", reqDict).
-	// 			Msg("http request dump data.")
-	//
-	//
-	// 		if len(resp) > 0 {
-	// 			respDict.RawJSON("body", resp)
-	// 		}
-	// 		log.Ctx(ctx.Request().Context()).
-	// 			Info().
-	// 			Dict("dump", respDict).
-	// 			Msg("http response dump data.")
-	// 	},
-	// }))
-
 	router.POST("/ping", func(c echo.Context) error {
 		return c.JSON(200, map[string]interface{}{
 			"hello": "world",

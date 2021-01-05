@@ -2,12 +2,12 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/karta0898098/kara/exception"
-	"github.com/labstack/echo/v4"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"net/http"
 	"runtime"
+
+	"github.com/karta0898098/kara/errors"
+	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 )
 
 // NewErrorHandlingMiddleware handles panic error
@@ -35,14 +35,14 @@ func NewErrorHandlingMiddleware() echo.MiddlewareFunc {
 					logger := log.With().Fields(customFields).Logger()
 					logger.Error().Msgf("http: unknown error: %v", err)
 
-					_ = c.JSON(500, errors.Wrap(exception.ErrInternal, err.Error()))
+					status, payload := errors.ErrInternal.ToRestfulView()
+					_ = c.JSON(status, payload)
 				}
 			}()
 			return next(c)
 		}
 	}
 }
-
 
 // RecordErrorMiddleware provide error middleware
 func RecordErrorMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -54,15 +54,15 @@ func RecordErrorMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			// 紀錄 Request 資料
 			req := c.Request()
 			{
-				logFields["request_method"] = req.Method
-				logFields["request_url"] = req.URL.String()
+				logFields["method"] = req.Method
+				logFields["uri"] = req.RequestURI
 			}
 			ctx := req.Context()
 
 			// 紀錄 Response 資料
 			resp := c.Response()
 			resp.After(func() {
-				logFields["response_status"] = resp.Status
+				logFields["status"] = resp.Status
 				// 根據狀態碼用不同等級來紀錄
 				logger := log.Ctx(ctx).With().Fields(logFields).Logger()
 				if resp.Status >= http.StatusInternalServerError {

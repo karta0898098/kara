@@ -56,7 +56,7 @@ func (s *testSuite) SetupTest() {
 	})
 }
 
-func (s *testSuite) Test_log() {
+func (s *testSuite) Test_Log() {
 	var (
 		book Book
 		ctx  context.Context

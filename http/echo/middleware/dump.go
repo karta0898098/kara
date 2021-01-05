@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func NewEchoDumpMiddleware() echo.MiddlewareFunc  {
+func NewEchoDumpMiddleware() echo.MiddlewareFunc {
 	return middleware.BodyDumpWithConfig(middleware.BodyDumpConfig{
 		Skipper: middleware.DefaultSkipper,
 		Handler: func(ctx echo.Context, req []byte, resp []byte) {
@@ -19,6 +19,7 @@ func NewEchoDumpMiddleware() echo.MiddlewareFunc  {
 			reqDict = zerolog.Dict()
 			respDict = zerolog.Dict()
 
+
 			if len(req) > 0 {
 				reqDict.RawJSON("body", req)
 			}
@@ -26,7 +27,6 @@ func NewEchoDumpMiddleware() echo.MiddlewareFunc  {
 				Info().
 				Dict("dump", reqDict).
 				Msg("http request dump data.")
-
 
 			if len(resp) > 0 {
 				respDict.RawJSON("body", resp)

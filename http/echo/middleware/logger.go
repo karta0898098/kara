@@ -15,6 +15,9 @@ func NewLoggerMiddleware() echo.MiddlewareFunc {
 
 			start := time.Now()
 			err := next(c)
+			if err != nil {
+				c.Error(err)
+			}
 			stop := time.Now()
 
 			var logger *zerolog.Event

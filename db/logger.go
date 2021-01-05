@@ -44,15 +44,6 @@ func NewLogger(config logger.Config) logger.Interface {
 		traceErrStr  = "%s "
 	)
 
-	// if config.Colorful {
-	// 	infoStr = "%s"
-	// 	warnStr = "%s"
-	// 	errStr = "%s"
-	// 	traceStr = "%s\n" + space + MagentaBold + "%s\n" + space + Blue + "elapsed" + Reset + " = %v ms\n" + Blue + space + "rows" + Reset + " = %d\n" + YellowBold + space + "%s\n%26s"
-	// 	traceWarnStr = "%s\n" + space + MagentaBold + "%s\n" + space + Cyan + "elapsed" + Reset + " = %v ms\n" + Cyan + space + "rows" + Reset + " = %d\n" + YellowBold + space + "%s\n%26s"
-	// 	traceErrStr = "%s\n" + space + MagentaBold + "%s\n" + space + Red + "elapsed" + Reset + " = %v ms\n" + Red + space + "rows" + Reset + " = %d\n" + Red + space + "%s\n%26s"
-	// }
-
 	l := &gormLogger{
 		LogLevel:      config.LogLevel,
 		SlowThreshold: config.SlowThreshold,
