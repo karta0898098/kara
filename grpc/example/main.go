@@ -46,7 +46,7 @@ func main() {
 		fx.Supply(logConfig),
 		fx.Provide(NewHandler),
 		fx.Provide(grpc.NewGRPC),
-		fx.Invoke(zlog.Setup),
+		fx.Invoke(zlog.New),
 		fx.Invoke(grpc.RunGRPC),
 		fx.Invoke(SetGRPCService),
 	)

@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	zlog.Setup(&zlog.Config{
+	zlog.New(&zlog.Config{
 		Env:   "local",
 		AppID: "app",
 		Level: -1,
@@ -22,7 +22,7 @@ func main() {
 	log.Trace().Msg("call")
 
 	ctx := context.Background()
-	ctx = WithValue(ctx,"trace_id","1234567")
+	ctx = WithValue(ctx, "trace_id", "1234567")
 	log.Ctx(ctx).Info().Msg("call")
 }
 

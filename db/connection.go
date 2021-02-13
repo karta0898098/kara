@@ -7,7 +7,6 @@ import (
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/pkg/errors"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -93,7 +92,10 @@ func SetupDatabase(database *Database) (*gorm.DB, error) {
 		}
 
 		err = sqlDB.Ping()
-		return err
+		if err != nil {
+			return err
+		}
+		return nil
 	}, bo)
 
 	if err != nil {

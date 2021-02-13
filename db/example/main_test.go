@@ -9,9 +9,10 @@ import (
 	"github.com/karta0898098/kara/db"
 	"github.com/karta0898098/kara/zlog"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/suite"
 	"gorm.io/driver/mysql"
-	"gorm.io/gorm/logger"
+	dblogger "gorm.io/gorm/logger"
 
 	"gorm.io/gorm"
 )
@@ -26,17 +27,16 @@ func TestEndpoint(t *testing.T) {
 }
 
 func (s *testSuite) SetupTest() {
-	zlog.Setup(&zlog.Config{
+	zlog.New(&zlog.Config{
 		Env:   "local",
 		AppID: "database",
 		Level: int8(zerolog.DebugLevel),
 		Debug: true,
 	})
 
-	newLogger := db.NewLogger(logger.Config{
-		SlowThreshold: time.Second, // Slow SQL threshold
-		LogLevel:      logger.Info, // Log level
-		Colorful:      true,        // Disable color
+	newLogger := db.NewLogger(dblogger.Config{
+		SlowThreshold: time.Second,   // Slow SQL threshold
+		LogLevel:      dblogger.Info, // Log level
 	})
 
 	returnValue := sqlmock.NewRows([]string{"id"}).
@@ -56,12 +56,16 @@ func (s *testSuite) SetupTest() {
 	})
 }
 
-func (s *testSuite) Test_Log() {
+func (s *testSuite) TestLog() {
 	var (
 		book Book
 		ctx  context.Context
 	)
 	ctx = context.Background()
+	// ctx = context.WithValue(ctx,"trace_id","123")
+
+	logger := log.With().Str("trace_id", "123").Logger()
+	ctx = logger.WithContext(ctx)
 
 	err := s.db.WithContext(ctx).Model(&Book{}).Where("id = ?", 1).Find(&book).Error
 	s.Equal(nil, err)

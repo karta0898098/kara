@@ -5,9 +5,6 @@ import (
 )
 
 type Config struct {
-	Read    db.Database `mapstructure:"read"`
-	Write   db.Database `mapstructure:"write"`
-	Secrets string      `mapstructure:"secrets"`
+	Read  db.Database `mapstructure:"read"`
+	Write db.Database `mapstructure:"write"`
 }
-
-

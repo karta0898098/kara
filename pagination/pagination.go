@@ -1,4 +1,4 @@
-package condition
+package pagination
 
 import "gorm.io/gorm"
 
@@ -6,10 +6,10 @@ const globalDefaultPerPage = 30
 
 // Pagination 用來表示分頁
 type Pagination struct {
-	Page       int // 目前頁面
-	PerPage    int // 每頁顯示多少筆
-	TotalCount int // 總筆數
-	TotalPage  int // 總頁數
+	Page       int `json:"page"`       // 目前頁面
+	PerPage    int `json:"perPage"`    // 每頁顯示多少筆
+	TotalCount int `json:"totalCount"` // 總筆數
+	TotalPage  int `json:"totalPage"`  // 總頁數
 }
 
 func NewPagination(page int, perPage int) *Pagination {

@@ -11,21 +11,6 @@ import (
 	"gorm.io/gorm/utils"
 )
 
-// Colors
-const (
-	Reset       = "\033[0m"
-	Red         = "\033[31m"
-	Green       = "\033[32m"
-	Yellow      = "\033[33m"
-	Blue        = "\033[34m"
-	Magenta     = "\033[35m"
-	Cyan        = "\033[36m"
-	White       = "\033[37m"
-	MagentaBold = "\033[35;1m"
-	RedBold     = "\033[31;1m"
-	YellowBold  = "\033[33;1m"
-)
-
 type gormLogger struct {
 	LogLevel                            logger.LogLevel
 	Config                              logger.Config
@@ -114,7 +99,7 @@ func (g *gormLogger) Trace(ctx context.Context, begin time.Time, fc func() (stri
 		currentLogger zerolog.Logger
 	)
 
-	currentLogger = log.With().Logger()
+	currentLogger = log.Ctx(ctx).With().Logger()
 
 	if g.LogLevel > 0 {
 		elapsed := time.Since(begin)

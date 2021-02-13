@@ -13,7 +13,7 @@ type Book struct {
 }
 
 func main() {
-	zlog.Setup(&zlog.Config{
+	zlog.New(&zlog.Config{
 		Env:   "local",
 		AppID: "db_test",
 		Debug: true,

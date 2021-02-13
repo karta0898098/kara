@@ -2,23 +2,20 @@ package http
 
 import (
 	"context"
-	stderrors "errors"
 	"net/http"
 
-	"github.com/bwmarrin/snowflake"
-	"github.com/go-playground/validator/v10"
 	"github.com/karta0898098/kara/errors"
-	"github.com/karta0898098/kara/http/echo/middleware"
+	"github.com/karta0898098/kara/http/middleware"
+
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
-
 	"go.uber.org/fx"
 )
 
 // NewEcho new echo http engine constructor
-func NewEcho(config *Config, node *snowflake.Node) *echo.Echo {
+func NewEcho(config Config) *echo.Echo {
 	echo.NotFoundHandler = EchoNotFoundHandler
-	echo.MethodNotAllowedHandler = EchoNotFoundHandler
 
 	e := echo.New()
 	e.Validator = NewEchoValidator()
@@ -35,11 +32,10 @@ func NewEcho(config *Config, node *snowflake.Node) *echo.Echo {
 	}
 
 	e.HTTPErrorHandler = EchoErrorHandler
-	e.Pre(middleware.NewTraceMiddleware(node))
+	e.Pre(middleware.NewTracerMiddleware())
 	e.Use(middleware.NewLoggerMiddleware())
 	e.Use(middleware.NewErrorHandlingMiddleware())
-	e.Use(middleware.NewCORS())
-	e.Use(middleware.RecordErrorMiddleware)
+	e.Use(middleware.RecordErrorMiddleware())
 
 	if config.Dump {
 		e.Use(middleware.NewEchoDumpMiddleware())
@@ -49,14 +45,14 @@ func NewEcho(config *Config, node *snowflake.Node) *echo.Echo {
 }
 
 // RunEcho for use uber fx to start http service
-func RunEcho(engine *echo.Echo, config *Config, lifecycle fx.Lifecycle) *echo.Echo {
+func RunEcho(engine *echo.Echo, config Config, lifecycle fx.Lifecycle) *echo.Echo {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			var err error
 			go func() {
 				err = engine.Start(config.Port)
 				if err != nil {
-					if stderrors.Is(err, http.ErrServerClosed) {
+					if errors.Is(err, http.ErrServerClosed) {
 						log.Info().Msg("http server close.")
 						return
 					}
@@ -86,19 +82,19 @@ func EchoErrorHandler(err error, c echo.Context) {
 
 	appException := errors.TryConvert(err)
 	if appException == nil {
-		status, payload := errors.ErrInternal.ToRestfulView()
+		status, payload := errors.ErrInternal.ToViewModel()
 		_ = c.JSON(status, payload)
 		return
 	}
 
-	status, payload := appException.ToRestfulView()
+	status, payload := appException.ToViewModel()
 
 	_ = c.JSON(status, payload)
 }
 
 // EchoNotFoundHandler responds not found response.
 func EchoNotFoundHandler(c echo.Context) error {
-	status, payload := errors.ErrPageNotFound.ToRestfulView()
+	status, payload := errors.ErrPageNotFound.ToViewModel()
 	return c.JSON(status, payload)
 }
 

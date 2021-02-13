@@ -6,6 +6,3 @@ type Config struct {
 	Dump bool   `mapstructure:"dump"`
 }
 
-func (c *Config) New() *Config {
-	return c
-}

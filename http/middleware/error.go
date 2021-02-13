@@ -22,7 +22,7 @@ func NewErrorHandlingMiddleware() echo.MiddlewareFunc {
 					customFields := map[string]interface{}{
 						"url":         c.Request().RequestURI,
 						"stack_error": string(trace),
-						"request_id":  traceID,
+						"trace_id":    traceID,
 					}
 					err, ok := r.(error)
 					if !ok {
@@ -35,7 +35,7 @@ func NewErrorHandlingMiddleware() echo.MiddlewareFunc {
 					logger := log.With().Fields(customFields).Logger()
 					logger.Error().Msgf("http: unknown error: %v", err)
 
-					status, payload := errors.ErrInternal.ToRestfulView()
+					status, payload := errors.ErrInternal.ToViewModel()
 					_ = c.JSON(status, payload)
 				}
 			}()
@@ -45,35 +45,37 @@ func NewErrorHandlingMiddleware() echo.MiddlewareFunc {
 }
 
 // RecordErrorMiddleware provide error middleware
-func RecordErrorMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		err := next(c)
-		if err != nil {
-			logFields := map[string]interface{}{}
+func RecordErrorMiddleware() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			err := next(c)
+			if err != nil {
+				logFields := map[string]interface{}{}
 
-			// 紀錄 Request 資料
-			req := c.Request()
-			{
-				logFields["method"] = req.Method
-				logFields["uri"] = req.RequestURI
-			}
-			ctx := req.Context()
-
-			// 紀錄 Response 資料
-			resp := c.Response()
-			resp.After(func() {
-				logFields["status"] = resp.Status
-				// 根據狀態碼用不同等級來紀錄
-				logger := log.Ctx(ctx).With().Fields(logFields).Logger()
-				if resp.Status >= http.StatusInternalServerError {
-					logger.Error().Msgf("%+v", err)
-				} else if resp.Status >= http.StatusBadRequest {
-					logger.Debug().Msgf("%+v", err)
-				} else {
-					logger.Debug().Msgf("%+v", err)
+				// 紀錄 Request 資料
+				req := c.Request()
+				{
+					logFields["method"] = req.Method
+					logFields["uri"] = req.RequestURI
 				}
-			})
+				ctx := req.Context()
+
+				// 紀錄 Response 資料
+				resp := c.Response()
+				resp.After(func() {
+					logFields["status"] = resp.Status
+					// 根據狀態碼用不同等級來紀錄
+					logger := log.Ctx(ctx).With().Fields(logFields).Logger()
+					if resp.Status >= http.StatusInternalServerError {
+						logger.Error().Msgf("%+v", err)
+					} else if resp.Status >= http.StatusBadRequest {
+						logger.Debug().Msgf("%+v", err)
+					} else {
+						logger.Debug().Msgf("%+v", err)
+					}
+				})
+			}
+			return err
 		}
-		return err
 	}
 }
