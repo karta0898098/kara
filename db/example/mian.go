@@ -19,8 +19,8 @@ func main() {
 		Debug: true,
 	})
 
-	conn, err := db.NewConnection(&db.Config{
-		DB: db.Database{
+	conn, err := orm.NewConnection(&orm.Config{
+		DB: orm.Database{
 			Debug:    true,
 			Host:     "127.0.0.1",
 			User:     "rode",

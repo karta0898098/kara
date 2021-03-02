@@ -5,6 +5,6 @@ import (
 )
 
 type Config struct {
-	Read  db.Database `mapstructure:"read"`
-	Write db.Database `mapstructure:"write"`
+	Read  orm.Database `mapstructure:"read"`
+	Write orm.Database `mapstructure:"write"`
 }

@@ -34,7 +34,7 @@ func (s *testSuite) SetupTest() {
 		Debug: true,
 	})
 
-	newLogger := db.NewLogger(dblogger.Config{
+	newLogger := orm.NewLogger(dblogger.Config{
 		SlowThreshold: time.Second,   // Slow SQL threshold
 		LogLevel:      dblogger.Info, // Log level
 	})

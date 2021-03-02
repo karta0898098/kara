@@ -6,10 +6,10 @@ const globalDefaultPerPage = 30
 
 // Pagination 用來表示分頁
 type Pagination struct {
-	Page       int `json:"page"`       // 目前頁面
-	PerPage    int `json:"perPage"`    // 每頁顯示多少筆
-	TotalCount int `json:"totalCount"` // 總筆數
-	TotalPage  int `json:"totalPage"`  // 總頁數
+	Page       int   `json:"page"`       // 目前頁面
+	PerPage    int   `json:"perPage"`    // 每頁顯示多少筆
+	TotalCount int64 `json:"totalCount"` // 總筆數
+	TotalPage  int64 `json:"totalPage"`  // 總頁數
 }
 
 func NewPagination(page int, perPage int) *Pagination {
@@ -17,6 +17,10 @@ func NewPagination(page int, perPage int) *Pagination {
 		Page:    page,
 		PerPage: perPage,
 	}
+}
+
+func (p *Pagination) GetLimitAndOffset() (int, int) {
+	return p.PerPage, p.offset()
 }
 
 // LimitAndOffset return gorm scope function
@@ -28,12 +32,12 @@ func (p *Pagination) LimitAndOffset(db *gorm.DB) *gorm.DB {
 }
 
 // SetTotalCountAndPage 用來計算總數和分頁
-func (p *Pagination) SetTotalCountAndPage(total int) {
+func (p *Pagination) SetTotalCountAndPage(total int64) {
 	p.CheckOrSetDefault()
 	p.TotalCount = total
 
-	quotient := p.TotalCount / p.PerPage
-	remainder := p.TotalCount % p.PerPage
+	quotient := p.TotalCount / int64(p.PerPage)
+	remainder := p.TotalCount % int64(p.PerPage)
 	if remainder > 0 {
 		quotient++
 	}
