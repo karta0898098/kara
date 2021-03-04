@@ -15,7 +15,7 @@ func TestExceptionBuild(t *testing.T) {
 	}{
 		{
 			name: "ResourceNotFound",
-			err:  ErrResourceNotFound.Build(gorm.ErrRecordNotFound),
+			err:  ErrResourceNotFound.BuildWithError(gorm.ErrRecordNotFound),
 		},
 		{
 			name: "ResourceNotFoundWithError",
@@ -23,7 +23,15 @@ func TestExceptionBuild(t *testing.T) {
 				DetailData{
 					"domain": "article",
 					"reason": "id not found",
-				}).Build(gorm.ErrRecordNotFound),
+				}).BuildWithError(gorm.ErrRecordNotFound),
+		},
+		{
+			name: "ResourceNotFoundWithMsg",
+			err: ErrResourceNotFound.WithDetails(
+				DetailData{
+					"domain": "article",
+					"reason": "id not found",
+				}).Build("occur error"),
 		},
 	}
 	for _, tt := range tests {
@@ -43,7 +51,7 @@ func TestExceptionToRestfulView(t *testing.T) {
 		{
 			name:   "ResourceNotFound",
 			status: 404,
-			err:    ErrResourceNotFound.Build(gorm.ErrRecordNotFound),
+			err:    ErrResourceNotFound.BuildWithError(gorm.ErrRecordNotFound),
 			view: &exceptionView{
 				Code:    404002,
 				Message: "The specified resource does not exist.",
@@ -58,7 +66,7 @@ func TestExceptionToRestfulView(t *testing.T) {
 					"domain": "article",
 					"reason": "id not found",
 				},
-			).Build(gorm.ErrRecordNotFound),
+			).BuildWithError(gorm.ErrRecordNotFound),
 			view: &exceptionView{
 				Code:    404002,
 				Message: "The specified resource does not exist.",
@@ -86,7 +94,7 @@ func TestExceptionIs(t *testing.T) {
 	}{
 		{
 			name: "ResourceNotFound",
-			err:  ErrResourceNotFound.Build(gorm.ErrRecordNotFound),
+			err:  ErrResourceNotFound.BuildWithError(gorm.ErrRecordNotFound),
 		},
 		{
 			name: "ResourceNotFoundWithError",
@@ -94,7 +102,7 @@ func TestExceptionIs(t *testing.T) {
 				DetailData{
 					"domain": "article",
 					"reason": "id not found",
-				}).Build(gorm.ErrRecordNotFound),
+				}).BuildWithError(gorm.ErrRecordNotFound),
 		},
 	}
 	for _, tt := range tests {

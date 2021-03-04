@@ -74,8 +74,12 @@ func (e *Exception) WithDetails(details DetailData) *Exception {
 	return &newErr
 }
 
-func (e *Exception) Build(err error) error {
+func (e *Exception) BuildWithError(err error) error {
 	return errors.Wrap(e, err.Error())
+}
+
+func (e *Exception) Build(msg string) error {
+	return errors.Wrap(e, msg)
 }
 
 // ToViewModel to restful view

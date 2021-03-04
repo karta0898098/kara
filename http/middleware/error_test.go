@@ -66,7 +66,7 @@ func TestRecordErrorMiddleware(t *testing.T) {
 				logger := log.With().Logger()
 				ctx = logger.WithContext(ctx)
 				c.SetRequest(c.Request().WithContext(ctx))
-				return tt.err.Build(fmt.Errorf("test error"))
+				return tt.err.BuildWithError(fmt.Errorf("test error"))
 			})
 			e.ServeHTTP(resp, req)
 		})
