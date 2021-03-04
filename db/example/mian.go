@@ -19,14 +19,14 @@ func main() {
 		Debug: true,
 	})
 
-	conn, err := orm.NewConnection(&orm.Config{
-		DB: orm.Database{
+	conn, err := db.NewConnection(&db.Config{
+		DB: db.Database{
 			Debug:    true,
 			Host:     "127.0.0.1",
-			User:     "rode",
+			User:     "example",
 			Port:     3306,
-			Password: "rode@3306",
-			Name:     "library",
+			Password: "example@password",
+			Name:     "example",
 			Type:     "mysql",
 		},
 	})

@@ -56,13 +56,6 @@ func UnaryClientInterceptor() grpc.UnaryClientInterceptor {
 			md = metadata.Pairs()
 		}
 
-		// traceID := trace.GetTraceID(ctx)
-		//
-		//
-		// if traceID == "" {
-		// 	traceID = uuid.New().String()
-		// }
-
 		traceID := ctx.Value(tracer.TraceIDKey).(string)
 
 		md.Set(echo.HeaderXRequestID, traceID)

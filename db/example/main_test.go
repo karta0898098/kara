@@ -11,10 +11,10 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/suite"
-	"gorm.io/driver/mysql"
-	dblogger "gorm.io/gorm/logger"
 
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	dbLogger "gorm.io/gorm/logger"
 )
 
 type testSuite struct {
@@ -34,9 +34,9 @@ func (s *testSuite) SetupTest() {
 		Debug: true,
 	})
 
-	newLogger := orm.NewLogger(dblogger.Config{
+	newLogger := db.NewLogger(dbLogger.Config{
 		SlowThreshold: time.Second,   // Slow SQL threshold
-		LogLevel:      dblogger.Info, // Log level
+		LogLevel:      dbLogger.Info, // Log level
 	})
 
 	returnValue := sqlmock.NewRows([]string{"id"}).

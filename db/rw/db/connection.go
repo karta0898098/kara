@@ -11,11 +11,11 @@ type Connection struct {
 }
 
 func NewConnection(config Config) (*Connection, error) {
-	readDB, err := orm.SetupDatabase(&config.Read)
+	readDB, err := db.SetupDatabase(&config.Read)
 	if err != nil {
 		return nil, err
 	}
-	writeDB, err := orm.SetupDatabase(&config.Write)
+	writeDB, err := db.SetupDatabase(&config.Write)
 	if err != nil {
 		return nil, err
 	}
