@@ -44,8 +44,18 @@ func TryConvert(target error) *Exception {
 	return err
 }
 
+// Is Check input is same
 func Is(err error, target error) bool {
-	return errors.Is(err, target)
+	causeErr, ok := errors.Cause(err).(*Exception)
+	if !ok {
+		return false
+	}
+
+	causeTarget, ok := errors.Cause(target).(*Exception)
+	if !ok {
+		return false
+	}
+	return causeErr.Code == causeTarget.Code
 }
 
 func (e *Exception) Error() string {
@@ -78,8 +88,8 @@ func (e *Exception) BuildWithError(err error) error {
 	return errors.Wrap(e, err.Error())
 }
 
-func (e *Exception) Build(msg string) error {
-	return errors.Wrap(e, msg)
+func (e *Exception) Build(format string, args ...interface{}) error {
+	return errors.Wrapf(e, format, args...)
 }
 
 // ToViewModel to restful view
