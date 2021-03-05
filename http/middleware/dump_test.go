@@ -13,7 +13,7 @@ import (
 )
 
 func TestNewEchoDumpMiddleware(t *testing.T) {
-	zlog.New(&zlog.Config{
+	zlog.Setup(&zlog.Config{
 		Env:   "local",
 		AppID: "test",
 		Debug: true,

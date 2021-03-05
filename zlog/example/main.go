@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	zlog.New(&zlog.Config{
+	zlog.Setup(&zlog.Config{
 		Env:   "local",
 		AppID: "app",
 		Level: -1,

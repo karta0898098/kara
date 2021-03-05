@@ -10,16 +10,16 @@ import (
 )
 
 // NewRedis new redis client
-func NewRedis(config *Config) (*redis.Client, error) {
+func NewRedis(config Config) (*redis.Client, error) {
 	return setupRedis(config)
 }
 
 // NewRedisCluster new redis cluster
-func NewRedisCluster(config *ClusterConfig) (*redis.ClusterClient, error) {
+func NewRedisCluster(config ClusterConfig) (*redis.ClusterClient, error) {
 	return setupRedisCluster(config)
 }
 
-func setupRedis(config *Config) (*redis.Client, error) {
+func setupRedis(config Config) (*redis.Client, error) {
 	var (
 		ctx context.Context
 		rdb *redis.Client
@@ -57,7 +57,7 @@ func setupRedis(config *Config) (*redis.Client, error) {
 }
 
 
-func setupRedisCluster(config *ClusterConfig) (*redis.ClusterClient, error) {
+func setupRedisCluster(config ClusterConfig) (*redis.ClusterClient, error) {
 	var (
 		ctx context.Context
 		rdb *redis.ClusterClient

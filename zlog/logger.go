@@ -56,7 +56,7 @@ func (h severityHook) Run(e *zerolog.Event, level zerolog.Level, msg string) {
 	}
 }
 
-func New(config *Config) {
+func Setup(config Config) {
 	zerolog.DisableSampling(true)
 	zerolog.TimestampFieldName = "time"
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs

@@ -13,13 +13,13 @@ type Book struct {
 }
 
 func main() {
-	zlog.New(&zlog.Config{
+	zlog.Setup(zlog.Config{
 		Env:   "local",
 		AppID: "db_test",
 		Debug: true,
 	})
 
-	conn, err := db.NewConnection(&db.Config{
+	conn, err := db.NewConnection(db.Config{
 		DB: db.Database{
 			Debug:    true,
 			Host:     "127.0.0.1",

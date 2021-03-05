@@ -27,7 +27,7 @@ func TestEndpoint(t *testing.T) {
 }
 
 func (s *testSuite) SetupTest() {
-	zlog.New(&zlog.Config{
+	zlog.Setup(zlog.Config{
 		Env:   "local",
 		AppID: "database",
 		Level: int8(zerolog.DebugLevel),

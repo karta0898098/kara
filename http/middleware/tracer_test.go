@@ -17,7 +17,7 @@ import (
 
 func TestNewTracerMiddleware(t *testing.T) {
 	// setup default logger
-	zlog.New(&zlog.Config{
+	zlog.Setup(&zlog.Config{
 		Env:   "local",
 		AppID: "test",
 		Debug: true,
@@ -56,7 +56,7 @@ func TestNewTracerMiddleware(t *testing.T) {
 
 func TestNewTracerMiddlewareWithConcurrency(t *testing.T) {
 	// setup default logger
-	zlog.New(&zlog.Config{
+	zlog.Setup(&zlog.Config{
 		Env:   "local",
 		AppID: "test",
 		Debug: true,

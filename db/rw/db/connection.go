@@ -10,17 +10,20 @@ type Connection struct {
 	WriteDB *gorm.DB
 }
 
-func NewConnection(config Config) (*Connection, error) {
+func NewConnection(config Config) (Connection, error) {
+	var (
+		conn Connection
+	)
 	readDB, err := db.SetupDatabase(&config.Read)
 	if err != nil {
-		return nil, err
+		return conn, err
 	}
 	writeDB, err := db.SetupDatabase(&config.Write)
 	if err != nil {
-		return nil, err
+		return conn, err
 	}
 
-	return &Connection{
+	return Connection{
 		ReadDB:  readDB,
 		WriteDB: writeDB,
 	}, nil

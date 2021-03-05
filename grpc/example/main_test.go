@@ -42,7 +42,7 @@ func (s *testSuite) SetupTest() {
 		fx.Supply(logConfig),
 		fx.Provide(NewHandler),
 		fx.Provide(grpc.NewGRPC),
-		fx.Invoke(zlog.New),
+		fx.Invoke(zlog.Setup),
 		fx.Invoke(grpc.RunGRPC),
 		fx.Invoke(SetGRPCService),
 	)

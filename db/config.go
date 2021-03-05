@@ -9,7 +9,7 @@ type Config struct {
 	Secrets string   `mapstructure:"secrets"`
 }
 
-func NewConnection(config *Config) (*gorm.DB, error) {
+func NewConnection(config Config) (*gorm.DB, error) {
 	db, err := SetupDatabase(&config.DB)
 	if err != nil {
 		return nil, err
