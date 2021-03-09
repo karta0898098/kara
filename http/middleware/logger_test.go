@@ -12,7 +12,7 @@ import (
 )
 
 func TestNewLoggerMiddleware(t *testing.T) {
-	zlog.Setup(&zlog.Config{
+	zlog.Setup(zlog.Config{
 		Env:   "local",
 		AppID: "test",
 		Debug: true,
