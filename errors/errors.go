@@ -46,16 +46,6 @@ func TryConvert(target error) *Exception {
 
 // Is Check input is same
 func Is(err error, target error) bool {
-	// causeErr, ok := errors.Cause(err).(*Exception)
-	// if !ok {
-	// 	return false
-	// }
-	//
-	// causeTarget, ok := errors.Cause(target).(*Exception)
-	// if !ok {
-	// 	return false
-	// }
-	// return causeErr.Code == causeTarget.Code
 	return errors.Is(err, target)
 }
 
