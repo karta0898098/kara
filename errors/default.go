@@ -24,6 +24,9 @@ var (
 	// 409 create resource has conflict
 	ErrConflict = &Exception{Code: 409001, Message: "The request conflict.", Status: http.StatusConflict, GRPCCode: codes.AlreadyExists}
 
+	// http 429 too many request
+	ErrTooManyRequests = &Exception{Code: 429001, Message: "Too Many Requests", Status: http.StatusTooManyRequests, GRPCCode: codes.PermissionDenied}
+
 	// http internal
 	ErrInternal = &Exception{Code: 500001, Message: "Serve occur error.", Status: http.StatusInternalServerError, GRPCCode: codes.Internal}
 )
