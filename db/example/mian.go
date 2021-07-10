@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/karta0898098/kara/db"
-	"github.com/karta0898098/kara/zlog"
+	"github.com/karta0898098/kara/logging"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/net/context"
 )
@@ -13,9 +13,9 @@ type Book struct {
 }
 
 func main() {
-	zlog.Setup(zlog.Config{
+	logging.Setup(logging.Config{
 		Env:   "local",
-		AppID: "db_test",
+		App:   "db_test",
 		Debug: true,
 	})
 

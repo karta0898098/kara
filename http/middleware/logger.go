@@ -37,9 +37,8 @@ func NewLoggerMiddleware() echo.MiddlewareFunc {
 				Str("trace_id", traceID).
 				Str("latency_human", stop.Sub(start).String()).
 				Int("status", status).
-				Err(err)
+				Msg("http access log.")
 
-			logger.Msg("http access log.")
 			return nil
 		}
 	}

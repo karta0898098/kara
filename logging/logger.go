@@ -1,4 +1,4 @@
-package zlog
+package logging
 
 import (
 	"fmt"
@@ -9,7 +9,31 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/rs/zerolog/pkgerrors"
+)
+
+// Level defines log levels.
+type Level int8
+
+const (
+	// DebugLevel defines debug log level.
+	DebugLevel Level = iota
+	// InfoLevel defines info log level.
+	InfoLevel
+	// WarnLevel defines warn log level.
+	WarnLevel
+	// ErrorLevel defines error log level.
+	ErrorLevel
+	// FatalLevel defines fatal log level.
+	FatalLevel
+	// PanicLevel defines panic log level.
+	PanicLevel
+	// NoLevel defines an absent log level.
+	NoLevel
+	// Disabled disables the logger.
+	Disabled
+
+	// TraceLevel defines trace log level.
+	TraceLevel Level = -1
 )
 
 var (
@@ -35,8 +59,6 @@ const (
 	colorDarkGray = 90
 )
 
-var Logger zerolog.Logger
-
 // Color ...
 func Color(colorString string) func(...interface{}) string {
 	sprint := func(args ...interface{}) string {
@@ -56,16 +78,38 @@ func (h severityHook) Run(e *zerolog.Event, level zerolog.Level, msg string) {
 	}
 }
 
-func Setup(config Config) {
+func Setup(config Config) zerolog.Logger {
+	return SetupWithOption(
+		WithEnv(config.Env),
+		WithApp(config.App),
+		WithDebug(config.Debug),
+		WithLevel(config.Level),
+	)
+}
+
+func SetupWithOption(opts ...Option) zerolog.Logger {
+	var (
+		logger zerolog.Logger
+	)
+
+	config := &Config{
+		Debug:  false,
+		Level:  InfoLevel,
+		writer: os.Stdout,
+	}
+
+	for _, opt := range opts {
+		opt.apply(config)
+	}
+
 	zerolog.DisableSampling(true)
-	zerolog.TimestampFieldName = "time"
+	zerolog.TimestampFieldName = "timestamp"
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
 	level := config.Level
 	if config.Debug {
 		output := zerolog.ConsoleWriter{
-			Out: os.Stdout,
+			Out: config.writer,
 		}
 		output.FormatLevel = func(i interface{}) string {
 			var l string
@@ -80,17 +124,17 @@ func Setup(config Config) {
 				case "warn":
 					l = colorize("Warn ", colorYellow)
 				case "error":
-					l = colorize(colorize("Error", colorRed), colorBold)
+					l = colorize("Error", colorRed)
 				case "fatal":
 					l = colorize(colorize("Fatal", colorRed), colorBold)
 				case "panic":
-					l = colorize(colorize("Panic", colorRed), colorBold)
+					l = colorize(colorize("Panic", colorMagenta), colorBold)
 				default:
-					l = colorize("???", colorBold)
+					l = "???"
 				}
 			} else {
 				if i == nil {
-					l = colorize("???", colorBold)
+					l = "???"
 				} else {
 					l = strings.ToUpper(fmt.Sprintf("%s", i))[0:3]
 				}
@@ -110,7 +154,7 @@ func Setup(config Config) {
 			t := fmt.Sprintf("%v", i)
 			millisecond, err := strconv.ParseInt(fmt.Sprintf("%s", i), 10, 64)
 			if err == nil {
-				t = time.Unix(int64(millisecond/1000), 0).Local().Format("2006/01/02 15:04:05")
+				t = time.Unix(millisecond/1000, 0).Local().Format("2006/01/02 15:04:05")
 			}
 			return colorize(t, colorCyan)
 		}
@@ -140,18 +184,30 @@ func Setup(config Config) {
 			zerolog.MessageFieldName,
 			zerolog.CallerFieldName,
 		}
-		Logger = zerolog.New(output)
+		logger = zerolog.New(output)
 	} else {
-		Logger = zerolog.New(os.Stdout)
+		logger = zerolog.New(config.writer)
 	}
 
-	log.Logger = Logger.Hook(severityHook{}).
+	if config.App != "" {
+		logger = logger.With().Str("app", config.App).Logger()
+	}
+
+	if config.Env != "" {
+		logger = logger.With().Str("env", config.Env).Logger()
+	}
+
+	logger = logger.
+		Hook(severityHook{}).
 		With().
-		Str("app_id", config.AppID).
-		Str("env", config.Env).
 		Timestamp().
 		Logger().
 		Level(zerolog.Level(level))
+
+	log.Logger = logger
+
+	return logger
+
 }
 
 // colorize returns the string s wrapped in ANSI code c, unless disabled is true.

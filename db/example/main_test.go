@@ -7,8 +7,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/karta0898098/kara/db"
-	"github.com/karta0898098/kara/zlog"
-	"github.com/rs/zerolog"
+	"github.com/karta0898098/kara/logging"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/suite"
 
@@ -27,10 +26,10 @@ func TestEndpoint(t *testing.T) {
 }
 
 func (s *testSuite) SetupTest() {
-	zlog.Setup(zlog.Config{
+	logging.Setup(logging.Config{
 		Env:   "local",
-		AppID: "database",
-		Level: int8(zerolog.DebugLevel),
+		App:   "database",
+		Level: logging.DebugLevel,
 		Debug: true,
 	})
 

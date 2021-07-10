@@ -7,8 +7,8 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/karta0898098/kara/logging"
 	"github.com/karta0898098/kara/tracer"
-	"github.com/karta0898098/kara/zlog"
 
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
@@ -17,9 +17,9 @@ import (
 
 func TestNewTracerMiddleware(t *testing.T) {
 	// setup default logger
-	zlog.Setup(zlog.Config{
+	logging.Setup(logging.Config{
 		Env:   "local",
-		AppID: "test",
+		App:   "test",
 		Debug: true,
 	})
 
@@ -56,9 +56,9 @@ func TestNewTracerMiddleware(t *testing.T) {
 
 func TestNewTracerMiddlewareWithConcurrency(t *testing.T) {
 	// setup default logger
-	zlog.Setup(zlog.Config{
+	logging.Setup(logging.Config{
 		Env:   "local",
-		AppID: "test",
+		App:   "test",
 		Debug: true,
 	})
 

@@ -95,8 +95,7 @@ func EchoErrorHandler(err error, c echo.Context) {
 
 // EchoNotFoundHandler responds not found response.
 func EchoNotFoundHandler(c echo.Context) error {
-	status, payload := errors.ErrPageNotFound.ToViewModel()
-	return c.JSON(status, payload)
+	return errors.ErrPageNotFound
 }
 
 // EchoValidator fot echo default validator

@@ -6,9 +6,8 @@ import (
 
 	"github.com/karta0898098/kara/grpc"
 	pb "github.com/karta0898098/kara/grpc/example/echo"
+	"github.com/karta0898098/kara/logging"
 	"github.com/karta0898098/kara/tracer"
-	"github.com/karta0898098/kara/zlog"
-	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/suite"
 
 	"go.uber.org/fx"
@@ -30,10 +29,10 @@ func (s *testSuite) SetupTest() {
 		RequestDump: true,
 	}
 
-	logConfig := &zlog.Config{
+	logConfig := logging.Config{
 		Env:   "local",
-		AppID: "test-grpc",
-		Level: int8(zerolog.DebugLevel),
+		App:   "test-grpc",
+		Level: logging.DebugLevel,
 		Debug: true,
 	}
 
@@ -42,7 +41,7 @@ func (s *testSuite) SetupTest() {
 		fx.Supply(logConfig),
 		fx.Provide(NewHandler),
 		fx.Provide(grpc.NewGRPC),
-		fx.Invoke(zlog.Setup),
+		fx.Invoke(logging.Setup),
 		fx.Invoke(grpc.RunGRPC),
 		fx.Invoke(SetGRPCService),
 	)

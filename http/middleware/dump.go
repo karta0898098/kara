@@ -15,27 +15,65 @@ import (
 
 func NewEchoDumpMiddleware() echo.MiddlewareFunc {
 	return BodyDumpWithConfig(BodyDumpConfig{
-		Skipper: func(c echo.Context) bool {
+		RequestSkipper: func(c echo.Context) bool {
+			ctx := c.Request().Context()
+			logger := log.Ctx(ctx)
 			contentType := c.Request().Header.Get(echo.HeaderContentType)
 			switch contentType {
+			case "":
+				return false
 			case echo.MIMEApplicationJSON:
 				return false
 			case echo.MIMEApplicationJSONCharsetUTF8:
 				return false
 			default:
-				log.Info().Msgf("http request dump not support type %s", contentType)
+				logger.Info().Msgf("http request dump not support type %s", contentType)
 				return true
 			}
 		},
-		Handler: func(c echo.Context, req []byte, resp []byte) {
-			log.Info().
-				RawJSON("body", req).
-				Msg("http request dump data.")
+		ResponseSkipper: func(c echo.Context) bool {
+			ctx := c.Request().Context()
+			logger := log.Ctx(ctx)
+			contentType := c.Response().Header().Get(echo.HeaderContentType)
+			switch contentType {
+			case "":
+				return false
+			case echo.MIMEApplicationJSON:
+				return false
+			case echo.MIMEApplicationJSONCharsetUTF8:
+				return false
+			default:
+				logger.Info().Msgf("http response dump not support type %s", contentType)
+				return true
+			}
+		},
+		RequestHandler: func(c echo.Context, req []byte) {
+			ctx := c.Request().Context()
+			logger := log.Ctx(ctx)
+			if len(req) == 0 {
+				logger.Info().
+					Interface("data", nil).
+					Msg("http request dump data.")
+			} else {
+				logger.Info().
+					RawJSON("data", req).
+					Msg("http request dump data.")
+			}
+		},
+		ResponseHandler: func(c echo.Context, resp []byte) {
+			ctx := c.Request().Context()
+			logger := log.Ctx(ctx)
 
-
-			log.Info().
-				RawJSON("body", resp).
-				Msg("http response dump data.")
+			if len(resp) == 0 {
+				logger.Info().
+					Interface("data", nil).
+					Msg("http response dump data.")
+				return
+			} else {
+				logger.Info().
+					RawJSON("data", resp).
+					Msg("http response dump data.")
+			}
 		},
 	})
 }
@@ -43,16 +81,21 @@ func NewEchoDumpMiddleware() echo.MiddlewareFunc {
 type (
 	// BodyDumpConfig defines the config for BodyDump middleware.
 	BodyDumpConfig struct {
-		// Skipper defines a function to skip middleware.
-		Skipper middleware.Skipper
+		// RequestSkipper defines a function to skip middleware.
+		RequestSkipper middleware.Skipper
+
+		// ResponseSkipper defines a function to skip middleware.
+		ResponseSkipper middleware.Skipper
 
 		// Handler receives request and response payload.
 		// Required.
-		Handler BodyDumpHandler
+		RequestHandler BodyDumpHandler
+
+		ResponseHandler BodyDumpHandler
 	}
 
 	// BodyDumpHandler receives the request and response payload.
-	BodyDumpHandler func(echo.Context, []byte, []byte)
+	BodyDumpHandler func(echo.Context, []byte)
 
 	bodyDumpResponseWriter struct {
 		io.Writer
@@ -63,7 +106,7 @@ type (
 var (
 	// DefaultBodyDumpConfig is the default BodyDump middleware config.
 	DefaultBodyDumpConfig = BodyDumpConfig{
-		Skipper: middleware.DefaultSkipper,
+		RequestSkipper: middleware.DefaultSkipper,
 	}
 )
 
@@ -71,37 +114,47 @@ var (
 // See: `BodyDump()`.
 func BodyDumpWithConfig(config BodyDumpConfig) echo.MiddlewareFunc {
 	// Defaults
-	if config.Handler == nil {
+	if config.RequestHandler == nil {
 		panic("echo: body-dump middleware requires a handler function")
 	}
-	if config.Skipper == nil {
-		config.Skipper = DefaultBodyDumpConfig.Skipper
+
+	if config.RequestHandler == nil {
+		panic("echo: body-dump middleware requires a handler function")
+	}
+
+	if config.RequestSkipper == nil {
+		config.RequestSkipper = DefaultBodyDumpConfig.RequestSkipper
+	}
+
+	if config.ResponseSkipper == nil {
+		config.ResponseSkipper = DefaultBodyDumpConfig.RequestSkipper
 	}
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) (err error) {
-			if config.Skipper(c) {
-				return next(c)
+			if !config.RequestSkipper(c) {
+				// Request
+				var reqBody []byte
+				if c.Request().Body != nil { // Read
+					reqBody, _ = ioutil.ReadAll(c.Request().Body)
+				}
+				c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(reqBody)) // Reset
+				config.RequestHandler(c, reqBody)
 			}
 
-			// Request
-			reqBody := []byte{}
-			if c.Request().Body != nil { // Read
-				reqBody, _ = ioutil.ReadAll(c.Request().Body)
-			}
-			c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(reqBody)) // Reset
+			err = next(c)
 
 			// Response
-			resBody := new(bytes.Buffer)
-			mw := io.MultiWriter(c.Response().Writer, resBody)
-			writer := &bodyDumpResponseWriter{Writer: mw, ResponseWriter: c.Response().Writer}
-			c.Response().Writer = writer
-			c.Response().After(func() {
-				// Callback
-				config.Handler(c, reqBody, resBody.Bytes())
-			})
-
-			return next(c)
+			if !config.ResponseSkipper(c) {
+				resBody := new(bytes.Buffer)
+				mw := io.MultiWriter(c.Response().Writer, resBody)
+				writer := &bodyDumpResponseWriter{Writer: mw, ResponseWriter: c.Response().Writer}
+				c.Response().Writer = writer
+				c.Response().After(func() {
+					config.ResponseHandler(c, resBody.Bytes())
+				})
+			}
+			return
 		}
 	}
 }

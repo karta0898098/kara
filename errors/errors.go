@@ -2,92 +2,31 @@ package errors
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 
-	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"
 )
 
-type DetailData map[string]interface{}
+var (
+	// http 400
+	ErrInvalidInput       = &Exception{Code: 400001, Message: "One of the request inputs is not valid.", Status: http.StatusBadRequest, GRPCCode: codes.InvalidArgument}
+	ErrInvalidHeaderValue = &Exception{Code: 400003, Message: "The value provided for one of the HTTP headers was not in the correct format.", Status: http.StatusBadRequest, GRPCCode: codes.InvalidArgument}
 
-type Exception struct {
-	Code     int        `json:"code"`
-	Status   int        `json:"status"`
-	Message  string     `json:"message"`
-	Details  DetailData `json:"details,omitempty"`
-	GRPCCode codes.Code `json:"grpc_code"`
-}
+	// http 401
+	ErrUnauthorized = &Exception{Code: 401001, Message: "The request unauthorized", Status: http.StatusUnauthorized, GRPCCode: codes.PermissionDenied}
 
-// New server internal error with message
-func New(message string) *Exception {
-	return &Exception{
-		Code:     500001,
-		Status:   http.StatusInternalServerError,
-		Message:  message,
-		GRPCCode: codes.Internal,
-	}
-}
+	// http 403
+	ErrNotAllowed = &Exception{Code: 403001, Message: "The request is understood, but it has been refused or access is not allowed.", Status: http.StatusForbidden, GRPCCode: codes.PermissionDenied}
 
-type exceptionView struct {
-	Code    int                    `json:"code"`
-	Message string                 `json:"message"`
-	Details map[string]interface{} `json:"details,omitempty"`
-}
+	// http 404
+	ErrPageNotFound     = &Exception{Code: 404001, Message: "Page not found.", Status: http.StatusNotFound, GRPCCode: codes.NotFound}
+	ErrResourceNotFound = &Exception{Code: 404002, Message: "The specified resource does not exist.", Status: http.StatusNotFound}
 
-// TryConvert ...
-func TryConvert(target error) *Exception {
-	err, ok := errors.Cause(target).(*Exception)
-	if !ok {
-		return nil
-	}
-	return err
-}
+	// 409 create resource has conflict
+	ErrConflict = &Exception{Code: 409001, Message: "The request conflict.", Status: http.StatusConflict, GRPCCode: codes.AlreadyExists}
 
-// Is Check input is same
-func Is(err error, target error) bool {
-	return errors.Is(err, target)
-}
+	// http 429 too many request
+	ErrTooManyRequests = &Exception{Code: 429001, Message: "Too Many Requests", Status: http.StatusTooManyRequests, GRPCCode: codes.PermissionDenied}
 
-func (e *Exception) Error() string {
-	var b strings.Builder
-	_, _ = b.WriteRune('[')
-	_, _ = b.WriteString(strconv.Itoa(e.Code))
-	_, _ = b.WriteRune(']')
-	_, _ = b.WriteRune(' ')
-	_, _ = b.WriteString(e.Message)
-	return b.String()
-}
-
-// Is target err equal this error
-func (e *Exception) Is(target error) bool {
-	causeErr, ok := errors.Cause(target).(*Exception)
-	if !ok {
-		return false
-	}
-	return e.Code == causeErr.Code
-}
-
-// WithDetails set detail error message
-func (e *Exception) WithDetails(details DetailData) *Exception {
-	newErr := *e
-	newErr.Details = details
-	return &newErr
-}
-
-func (e *Exception) BuildWithError(err error) error {
-	return errors.Wrap(e, err.Error())
-}
-
-func (e *Exception) Build(format string, args ...interface{}) error {
-	return errors.Wrapf(e, format, args...)
-}
-
-// ToViewModel to restful view
-func (e *Exception) ToViewModel() (int, *exceptionView) {
-	return e.Status, &exceptionView{
-		Code:    e.Code,
-		Message: e.Message,
-		Details: e.Details,
-	}
-}
+	// http internal
+	ErrInternal = &Exception{Code: 500001, Message: "Serve occur error.", Status: http.StatusInternalServerError, GRPCCode: codes.Internal}
+)

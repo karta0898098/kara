@@ -5,16 +5,16 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/karta0898098/kara/zlog"
+	"github.com/karta0898098/kara/logging"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewLoggerMiddleware(t *testing.T) {
-	zlog.Setup(zlog.Config{
+	logging.Setup(logging.Config{
 		Env:   "local",
-		AppID: "test",
+		App:   "test",
 		Debug: true,
 	})
 

@@ -3,26 +3,26 @@ package main
 import (
 	"context"
 
-	"github.com/karta0898098/kara/zlog"
+	"github.com/karta0898098/kara/logging"
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	zlog.Setup(zlog.Config{
+	logger := logging.Setup(logging.Config{
 		Env:   "local",
-		AppID: "app",
-		Level: -1,
+		App:   "app",
 		Debug: true,
 	})
 
-	log.Debug().Msg("call")
-	log.Info().Msg("call")
-	log.Warn().Msg("call")
-	log.Error().Msg("call")
-	log.Trace().Msg("call")
+	logger.Debug().Msg("call")
+	logger.Info().Msg("call")
+	logger.Warn().Msg("call")
+	logger.Error().Msg("call")
+	logger.Trace().Msg("call")
 
 	ctx := context.Background()
-	ctx = WithValue(ctx, "trace_id", "1234567")
+	ctx = WithValue(ctx, "trace_id", "test-trace-id")
+
 	log.Ctx(ctx).Info().Msg("call")
 }
 

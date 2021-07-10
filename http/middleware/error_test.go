@@ -7,15 +7,15 @@ import (
 	"testing"
 
 	"github.com/karta0898098/kara/errors"
-	"github.com/karta0898098/kara/zlog"
+	"github.com/karta0898098/kara/logging"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 )
 
 func TestRecordErrorMiddleware(t *testing.T) {
-	zlog.Setup(zlog.Config{
+	logging.Setup(logging.Config{
 		Env:   "local",
-		AppID: "test",
+		App:   "test",
 		Debug: true,
 	})
 
